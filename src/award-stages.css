@@ -1,1 +1,48 @@
 .award-intro .award-confetti{display:none}.award-intro .award-reveal-content>svg{width:110px;height:110px;animation:introTrophy 3s ease-in-out infinite}.award-intro .award-reveal-content h2{font-size:clamp(65px,11vw,160px);color:#d6ecff;text-shadow:0 0 40px #75bdff;animation:introTitle 1.4s both}.award-intro-prompt{font:800 clamp(20px,3vw,45px) 'Barlow Condensed',sans-serif;letter-spacing:.25em;margin-top:45px;color:#fff;animation:introBlink 3s ease-in-out infinite}.award-final .award-reveal-content>svg,.award-final .award-reveal-content .vote-kicker,.award-final .award-reveal-content h2{animation:awardEnter 1.5s both}.award-final .award-winner{animation:awardName 2s 3.4s both}.award-final .award-reveal-content>p{animation:awardEnter 1s 5.1s both}.award-final .award-rays{animation:awardSpin 4s linear infinite}.award-final .award-confetti{animation:confettiAppear .3s 3.6s both}.award-final .award-reveal-content:before{content:'';position:absolute;inset:-20%;background:radial-gradient(circle,#c9e9ff77,transparent 55%);z-index:-1;animation:revealFlash 3.8s both}@keyframes introTrophy{50%{transform:scale(1.12);filter:drop-shadow(0 0 65px #d0ecff)}}@keyframes introTitle{from{opacity:0;transform:scale(1.25);filter:blur(16px)}to{opacity:1;transform:scale(1);filter:blur(0)}}@keyframes introBlink{50%{opacity:.4}}@keyframes confettiAppear{from{opacity:0}to{opacity:1}}@keyframes revealFlash{0%,70%{opacity:0;transform:scale(.3)}85%{opacity:1;transform:scale(1.4)}100%{opacity:.3;transform:scale(1)}}@media(prefers-reduced-motion:reduce){.award-intro .award-reveal-content>svg,.award-intro .award-reveal-content h2,.award-intro-prompt,.award-final .award-winner,.award-final .award-reveal-content>p,.award-final .award-rays,.award-final .award-confetti,.award-final .award-reveal-content:before{animation:none}}
+
+/* Two deliberately different award shows. Intro stays until the host presses reveal. */
+.award-reveal .reveal-stadium,.award-reveal .reveal-beams,.award-reveal .reveal-rings,.award-reveal .reveal-impact{position:absolute;inset:0;pointer-events:none}
+.reveal-scorer{background:radial-gradient(ellipse at 50% 100%,#2368a6 0%,#0b2851 38%,#020817 85%)}
+.reveal-scorer .reveal-stadium{background:repeating-linear-gradient(90deg,transparent 0 12%,#ffffff0a 12.2% 12.4%,transparent 12.6% 24%),linear-gradient(0deg,#4c9cff25,transparent 42%);transform:perspective(600px) rotateX(35deg) scale(1.6);transform-origin:bottom;opacity:.8}
+.reveal-scorer .reveal-beams span{position:absolute;top:-55%;width:24%;height:170%;background:linear-gradient(90deg,transparent,#8cd8ff3b,transparent);filter:blur(20px);transform-origin:50% 0;animation:scorerSweep 4s ease-in-out infinite alternate}
+.reveal-scorer .reveal-beams span:nth-child(1){left:3%;--angle:-32deg}.reveal-scorer .reveal-beams span:nth-child(2){left:27%;--angle:19deg;animation-delay:-2s}.reveal-scorer .reveal-beams span:nth-child(3){left:53%;--angle:-18deg;animation-delay:-1s}.reveal-scorer .reveal-beams span:nth-child(4){left:76%;--angle:29deg;animation-delay:-3s}
+.reveal-scorer .award-reveal-content h2{color:#e7f7ff;text-shadow:0 0 35px #4ac3ff}
+.reveal-scorer .award-intro .award-reveal-content h2{animation:scorerTitle 1s both}
+.reveal-scorer.award-final .award-winner{color:#fff;text-shadow:0 0 22px #ffbd4d,0 0 85px #ff7b34;animation:scorerWinner 1.1s 2.6s cubic-bezier(.13,.85,.2,1.1) both}
+.reveal-scorer.award-final .reveal-impact{background:radial-gradient(circle,#fff 0%,#9edcff 14%,#ffc56a77 35%,transparent 70%);animation:scorerImpact 2.4s 2.6s both}
+.reveal-scorer.award-final .award-confetti{animation:confettiAppear .3s 3.2s both}
+.reveal-scorer.award-final .award-reveal-content>p{animation:awardEnter .8s 3.9s both}
+.scorer-countdown{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.scorer-countdown span{position:absolute;font:900 min(60vw,65vh) 'Barlow Condensed',sans-serif;color:#ffffff0f;text-shadow:0 0 65px #7ccaff50;opacity:0;animation:scorerCount 3.6s linear both}
+.scorer-countdown span:nth-child(2){animation-delay:1.2s}.scorer-countdown span:nth-child(3){animation-delay:2.4s}
+@keyframes scorerCount{0%{opacity:0;transform:scale(1.7)}15%,70%{opacity:.7}100%{opacity:0;transform:scale(.75)}}
+@keyframes scorerSweep{from{transform:rotate(var(--angle))}to{transform:rotate(var(--angle))}}
+@keyframes scorerWinner{0%{opacity:0;transform:translateY(-95vh) scale(2.5);filter:blur(16px)}65%{opacity:1;filter:blur(0)}80%{transform:translateY(20px) scale(.93)}100%{transform:translateY(0) scale(1)}}
+@keyframes scorerImpact{0%,5%{opacity:0;transform:scale(.1)}12%{opacity:1;transform:scale(1.6)}45%,100%{opacity:0;transform:scale(3)}}
+@keyframes scorerTitle{from{opacity:0;transform:scale(2);filter:blur(20px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+
+/* Player of the year: theatrical darkness, gold, halo and slower reveal. */
+.reveal-player{background:radial-gradient(ellipse at 50% 55%,#292047 0%,#10132f 38%,#030712 86%)}
+.reveal-player .award-rays{background:conic-gradient(from 0deg,transparent 0 15%,#f6cf6230 20%,transparent 30% 55%,#a68cff2c 60%,transparent 75%);animation:awardSpin 25s linear infinite}
+.reveal-player .reveal-beams span{position:absolute;top:-50%;left:50%;width:10%;height:130%;transform-origin:50% 0;background:linear-gradient(90deg,transparent,#ffe6a022,transparent);filter:blur(24px);animation:playerSpot 7s ease-in-out infinite alternate}
+.reveal-player .reveal-beams span:nth-child(2){animation-delay:-2s}.reveal-player .reveal-beams span:nth-child(3){animation-delay:-4s}.reveal-player .reveal-beams span:nth-child(4){animation-delay:-6s}
+.reveal-player .reveal-rings{display:grid;place-items:center}
+.reveal-player .reveal-rings span{position:absolute;width:min(65vw,70vh);aspect-ratio:1;border:2px solid #f5d48130;border-radius:50%;box-shadow:0 0 55px #e8bb5c18,inset 0 0 35px #e8bb5c16;animation:playerHalo 5s ease-in-out infinite}
+.reveal-player .reveal-rings span:nth-child(2){width:min(82vw,87vh);animation-delay:-1.6s}.reveal-player .reveal-rings span:nth-child(3){width:min(100vw,100vh);animation-delay:-3.2s}
+.reveal-player .award-reveal-content>svg{color:#f7d57b;filter:drop-shadow(0 0 32px #e9b84c)}
+.reveal-player .award-reveal-content h2{color:#f8e6b5;text-shadow:0 0 55px #d5a74d99}
+.reveal-player .award-intro-prompt{color:#f4d9a0;letter-spacing:.35em}
+.reveal-player.award-final .award-reveal-content h2{animation:playerFade 2.5s both}
+.reveal-player.award-final .award-winner{color:#ffe6a1;text-shadow:0 0 30px #f5bf55,0 0 100px #d69b47;animation:playerWinner 3s 4.6s cubic-bezier(.2,.9,.2,1) both}
+.reveal-player.award-final .reveal-impact{background:radial-gradient(circle,#fff9dcbb 0%,#f4d17766 17%,transparent 65%);animation:playerFlash 3s 5.1s both}
+.reveal-player.award-final .award-confetti{animation:confettiAppear 1.5s 6.2s both}
+.reveal-player.award-final .award-reveal-content>p{animation:awardEnter 1.2s 7s both}
+.player-stars{position:absolute;inset:0;pointer-events:none}
+.player-stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffe8aa;box-shadow:0 0 12px #ffe6a5;animation:playerTwinkle 2.8s ease-in-out infinite alternate}
+@keyframes playerSpot{from{transform:rotate(-35deg)}to{transform:rotate(35deg)}}
+@keyframes playerHalo{50%{transform:scale(1.13);opacity:.4}}
+@keyframes playerTwinkle{from{opacity:.15;transform:scale(.6)}to{opacity:.9;transform:scale(1.7)}}
+@keyframes playerFade{0%{opacity:0;filter:blur(20px)}100%{opacity:1;filter:blur(0)}}
+@keyframes playerWinner{0%,18%{opacity:0;transform:scale(.65);filter:blur(25px);letter-spacing:.35em}75%{opacity:1;filter:blur(0)}100%{opacity:1;transform:scale(1);letter-spacing:normal}}
+@keyframes playerFlash{0%,10%{opacity:0;transform:scale(.4)}35%{opacity:.7;transform:scale(1.4)}100%{opacity:0;transform:scale(2.2)}}
+@media(prefers-reduced-motion:reduce){.reveal-beams span,.reveal-rings span,.scorer-countdown span,.player-stars i,.reveal-scorer.award-final .reveal-impact,.reveal-player.award-final .reveal-impact,.reveal-scorer.award-final .award-winner,.reveal-player.award-final .award-winner{animation:none!important}.scorer-countdown{display:none}}
