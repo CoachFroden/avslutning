@@ -65,3 +65,5 @@
 @keyframes phoneWait{to{border-color:#85d9ff;box-shadow:0 0 25px #46b6ff33}}
 @media(max-width:650px){.phone-heading h1{font-size:29px}.phone-bolt{font-size:27px}.phone-card h2{font-size:19px;margin:10px 0}.phone-card .phone-answers .phone-answer{min-height:52px}.phone-answers{gap:8px;margin:10px 0}.phone-score{margin-top:13px;padding:12px}.phone-score>strong{font-size:30px}.phone-clock>strong{font-size:30px}}
 @media(prefers-reduced-motion:reduce){.quiz-phone *,.quiz-phone *:before{animation:none!important;transition:none!important}}
+
+.phone-final{text-align:center;animation:phoneEnter .65s ease-out}.phone-final-trophy{font-size:76px;filter:drop-shadow(0 0 25px #ffda70aa);animation:phoneBolt 2s ease-in-out infinite}.phone-final h2{font-size:25px;color:#ffe08b}.phone-final>strong{display:block;font-size:34px;color:#fff;text-shadow:0 0 24px #ffe57a77}.phone-final-board{display:grid;gap:8px;margin-top:22px}.phone-final-board>div{display:flex;justify-content:space-between;gap:12px;padding:13px;background:#17466e;border:1px solid #5e94bf;border-radius:12px;font-size:15px}.phone-final-board b{color:#ffe18a}
