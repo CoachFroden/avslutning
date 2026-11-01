@@ -1,8 +1,6 @@
 {
   "rewrites": [
-    {
-      "source": "/visning",
-      "destination": "/index.html"
-    }
+    {"source": "/visning", "destination": "/index.html"},
+    {"source": "/stemme", "destination": "/index.html"}
   ]
 }
