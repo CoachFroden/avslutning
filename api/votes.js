@@ -1,6 +1,6 @@
 import admin from 'firebase-admin';
 import crypto from 'node:crypto';
-const DEFAULT_PLAYERS=["Ask","Brage","Gabriel","Lars","Liam","Lukas","Martin","Nicolai","Nytveit","Noah","Oliver","Snorre","Sondre","Sverre","Thage","Theodor","Torvald"];
+const DEFAULT_PLAYERS=["Ask","Brage","Gabriel","Lars","Liam","Lukas","Martin","Nicolai","Nytveit","Noah","Oliver","Snorre","Sondre","Sverre","Thage","Theodor"];
 function db(){if(!admin.apps.length){const raw=process.env.FIREBASE_SERVICE_ACCOUNT;if(!raw)throw Error('Firebase er ikke konfigurert');admin.initializeApp({credential:admin.credential.cert(JSON.parse(raw))})}return admin.firestore()}
 function authorized(req){const secret=process.env.SESSION_SECRET;if(!secret)return false;const token=(req.headers.cookie||'').match(/(?:^|; )g14_session=([^;]+)/)?.[1]||'';const [expiry,sig]=token.split('.');if(!expiry||!sig||!/^\d+$/.test(expiry)||Number(expiry)<Date.now())return false;const expected=crypto.createHmac('sha256',secret).update(expiry).digest('hex');return sig.length===expected.length&&crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))}
 const norm=x=>String(x||'').trim().slice(0,80);
