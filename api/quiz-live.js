@@ -14,23 +14,25 @@ export default async function handler(req,res){
  const questions=(await store.doc('settings/quiz').get()).data()?.questions||[];
  const q=questions[state.index];
  const startedAt=startedMs(state);const deadline=startedAt+LIMIT_MS;const expired=state.stage==='question'&&startedAt>0&&Date.now()>=deadline;
- const payload={serverNow:Date.now(),startedAt,deadline,expired,stage:state.stage,index:state.index,round:state.round||0,total:questions.length,question:state.stage==='question'||state.stage==='answer'?q?.question:null,options:state.stage==='question'||state.stage==='answer'?q?.answers:null,correct:state.stage==='answer'?q?.correct:null};
- const playerName=String(req.query?.name||'').trim();if(validName(playerName)){const key=crypto.createHash('sha256').update(playerName.toLocaleLowerCase('nb-NO')).digest('hex');const mySnap=await answers.where('playerKey','==',key).get();payload.myAnswers=mySnap.docs.map(d=>({round:d.data().round,answer:d.data().answer,points:d.data().points||0}));payload.totalPoints=payload.myAnswers.reduce((n,a)=>n+a.points,0)}
- if(auth(req)){const snap=await answers.where('round','==',state.round||0).get();payload.responses=snap.size;payload.counts=[0,0,0,0];snap.docs.forEach(d=>{const n=d.data().answer;if(n>=0&&n<4)payload.counts[n]++})}
+ let leaderboard=[];if(state.stage==='finished'){const all=await answers.get();const board=new Map();all.docs.forEach(doc=>{const v=doc.data();if((v.sessionId||'legacy')!==(state.sessionId||'legacy'))return;const key=v.playerKey||v.name;const prev=board.get(key)||{name:v.name,points:0,correct:0};prev.points+=v.points||0;prev.correct+=(v.points||0)>0?1:0;board.set(key,prev)});leaderboard=[...board.values()].sort((a,b)=>b.points-a.points||b.correct-a.correct||a.name.localeCompare(b.name,'nb')).map((v,i)=>({...v,rank:i+1}));}
+ const payload={leaderboard:state.stage==='finished'?leaderboard:undefined,serverNow:Date.now(),startedAt,deadline,expired,stage:state.stage,index:state.index,round:state.round||0,total:questions.length,question:state.stage==='question'||state.stage==='answer'?q?.question:null,options:state.stage==='question'||state.stage==='answer'?q?.answers:null,correct:state.stage==='answer'?q?.correct:null};
+ const playerName=String(req.query?.name||'').trim();if(validName(playerName)){const key=crypto.createHash('sha256').update(playerName.toLocaleLowerCase('nb-NO')).digest('hex');const mySnap=await answers.where('playerKey','==',key).get();payload.myAnswers=mySnap.docs.filter(d=>(d.data().sessionId||'legacy')===(state.sessionId||'legacy')).map(d=>({round:d.data().round,answer:d.data().answer,points:d.data().points||0}));payload.totalPoints=payload.myAnswers.reduce((n,a)=>n+a.points,0);if(state.stage==='finished')payload.myRank=leaderboard.find(v=>v.name.toLocaleLowerCase('nb-NO')===playerName.toLocaleLowerCase('nb-NO'))?.rank||null}
+ if(auth(req)){const snap=await answers.where('round','==',state.round||0).get();const current=snap.docs.filter(d=>(d.data().sessionId||'legacy')===(state.sessionId||'legacy'));payload.responses=current.length;payload.counts=[0,0,0,0];current.forEach(d=>{const n=d.data().answer;if(n>=0&&n<4)payload.counts[n]++})}
  return res.status(200).json(payload)
  }
  if(req.method!=='POST')return res.status(405).json({error:'Ugyldig metode'});
+ if(req.body?.action==='finish'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan avslutte quizen'});await session.set({stage:'finished',updatedAt:admin.firestore.FieldValue.serverTimestamp()},{merge:true});return res.status(200).json({ok:true,stage:'finished'})}
  if(req.body?.action==='stage'){
  if(!auth(req))return res.status(401).json({error:'Kun administrator kan styre quizen'});
  const stage=req.body.stage,index=Number(req.body.index);
  if(!['waiting','intro','question','answer'].includes(stage)||!Number.isInteger(index)||index<0)return res.status(400).json({error:'Ugyldig visning'});
  const snap=await store.doc('settings/quiz').get(),questions=snap.data()?.questions||[];
  if(index>=questions.length)return res.status(400).json({error:'Spørsmålet finnes ikke'});
- const old=(await session.get()).data()||{};
+ const old=(await session.get()).data()||{};const restarting=old.stage==='finished'&&stage==='intro';const sessionId=restarting?crypto.randomUUID():(old.sessionId||'legacy');
  const newRound=stage==='question'&&(old.stage!=='question'||old.index!==index);
- const round=newRound?(old.round||0)+1:(old.round||0);
+ const round=restarting?0:newRound?(old.round||0)+1:(old.round||0);
  const startedAt=newRound?Date.now():startedMs(old);
- await session.set({stage,index,round,startedAt,updatedAt:admin.firestore.FieldValue.serverTimestamp()});
+ await session.set({stage,index,round,startedAt,sessionId,updatedAt:admin.firestore.FieldValue.serverTimestamp()});
  return res.status(200).json({ok:true,stage,index,round,startedAt})
  }
  if(req.body?.action==='answer'){
@@ -45,9 +47,9 @@ export default async function handler(req,res){
  if(!startedAt||elapsed>=LIMIT_MS)throw Error('Tiden er ute! Du fikk 0 poeng.');
  const questionSnap=await tx.get(store.doc('settings/quiz'));const correct=questionSnap.data()?.questions?.[state.index]?.correct;
  const points=answer===correct?Math.max(0,Math.floor(1000*(LIMIT_MS-elapsed)/LIMIT_MS)):0;
- const ref=answers.doc(round+'_'+key),prior=await tx.get(ref);
+ const ref=answers.doc((state.sessionId||'legacy')+'_'+round+'_'+key),prior=await tx.get(ref);
  if(prior.exists)throw Error('Dette navnet har allerede svart på spørsmålet');
- tx.create(ref,{name,playerKey:key,answer,round,points,createdAt:admin.firestore.FieldValue.serverTimestamp()});
+ tx.create(ref,{name,playerKey:key,sessionId:state.sessionId||'legacy',answer,round,points,createdAt:admin.firestore.FieldValue.serverTimestamp()});
  });
  return res.status(200).json({ok:true});
  }catch(e){return res.status(409).json({error:e.message})}
