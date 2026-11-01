@@ -8,7 +8,8 @@ const validName=n=>typeof n==='string'&&n.trim().length>=2&&n.trim().length<=60;
 export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');
  try{
- const store=db(),session=store.doc('settings/quizLive'),answers=store.collection('quizAnswers');
+ const store=db(),session=store.doc('settings/quizLive'),answers=store.collection('quizAnswers'),history=store.collection('quizSessions');
+ if(req.method==='GET'&&req.query?.view==='history'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan se historikk'});const snaps=await history.orderBy('finishedAt','desc').limit(50).get();return res.status(200).json({sessions:snaps.docs.map(d=>({id:d.id,...d.data(),finishedAt:d.data().finishedAt?.toMillis?.()||null}))})}
  if(req.method==='GET'){
  const state=(await session.get()).data()||{stage:'waiting',index:0,round:0};
  const questions=(await store.doc('settings/quiz').get()).data()?.questions||[];
@@ -21,7 +22,9 @@ export default async function handler(req,res){
  return res.status(200).json(payload)
  }
  if(req.method!=='POST')return res.status(405).json({error:'Ugyldig metode'});
- if(req.body?.action==='finish'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan avslutte quizen'});await session.set({stage:'finished',updatedAt:admin.firestore.FieldValue.serverTimestamp()},{merge:true});return res.status(200).json({ok:true,stage:'finished'})}
+ if(req.body?.action==='finish'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan avslutte quizen'});const old=(await session.get()).data()||{};const id=old.sessionId||'legacy';const all=await answers.where('sessionId','==',id).get();const players=new Set(all.docs.map(d=>d.data().playerKey));await history.doc(id).set({finishedAt:admin.firestore.FieldValue.serverTimestamp(),playerCount:players.size,answerCount:all.size,roundCount:old.round||0});await session.set({stage:'finished',sessionId:id,updatedAt:admin.firestore.FieldValue.serverTimestamp()},{merge:true});return res.status(200).json({ok:true,stage:'finished'})}
+ if(req.body?.action==='new'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan starte ny quiz'});const id=crypto.randomUUID();await session.set({stage:'intro',index:0,round:0,startedAt:0,sessionId:id,updatedAt:admin.firestore.FieldValue.serverTimestamp()});return res.status(200).json({ok:true,stage:'intro',index:0,round:0,sessionId:id})}
+ if(req.body?.action==='delete'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan slette quizresultater'});const id=String(req.body.id||'');if(!/^(legacy|[0-9a-f-]{36})$/.test(id))return res.status(400).json({error:'Ugyldig quiz-ID'});const current=(await session.get()).data()||{};if(current.sessionId===id&&current.stage!=='finished')return res.status(409).json({error:'Du kan ikke slette en pågående quiz'});const docs=await answers.where('sessionId','==',id).get();for(let i=0;i<docs.docs.length;i+=400){const batch=store.batch();docs.docs.slice(i,i+400).forEach(d=>batch.delete(d.ref));await batch.commit()}await history.doc(id).delete();if(current.sessionId===id)await session.set({stage:'waiting',index:0,round:0,startedAt:0,sessionId:crypto.randomUUID(),updatedAt:admin.firestore.FieldValue.serverTimestamp()});return res.status(200).json({ok:true,deleted:docs.size})}
  if(req.body?.action==='stage'){
  if(!auth(req))return res.status(401).json({error:'Kun administrator kan styre quizen'});
  const stage=req.body.stage,index=Number(req.body.index);
