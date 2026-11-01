@@ -2,7 +2,7 @@ import admin from 'firebase-admin';
 import crypto from 'node:crypto';
 function db(){if(!admin.apps.length){admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))})}return admin.firestore()}
 function auth(req){const secret=process.env.SESSION_SECRET;if(!secret)return false;const token=(req.headers.cookie||'').match(/(?:^|; )g14_session=([^;]+)/)?.[1]||'';const [expiry,sig]=token.split('.');if(!expiry||!sig||!/^\d+$/.test(expiry)||Number(expiry)<Date.now())return false;const expected=crypto.createHmac('sha256',secret).update(expiry).digest('hex');return sig.length===expected.length&&crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))}
-const LIMIT_MS=15000,READY_MS=3000,COUNTDOWN_MS=5000;
+const LIMIT_MS=15000,READY_MS=6000,COUNTDOWN_MS=5000;
 const effectiveStage=s=>s.stage==='countdown'&&Date.now()>=startedMs(s)+READY_MS+COUNTDOWN_MS?'question':s.stage;
 const startedMs=state=>state.startedAt?.toMillis?.()??(typeof state.startedAt==='number'?state.startedAt:0);
 const validName=n=>typeof n==='string'&&n.trim().length>=2&&n.trim().length<=60;
