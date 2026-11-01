@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/visning",
+      "destination": "/index.html"
+    }
+  ]
+}
