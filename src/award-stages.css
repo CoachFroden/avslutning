@@ -46,3 +46,5 @@
 @keyframes playerWinner{0%,18%{opacity:0;transform:scale(.65);filter:blur(25px);letter-spacing:.35em}75%{opacity:1;filter:blur(0)}100%{opacity:1;transform:scale(1);letter-spacing:normal}}
 @keyframes playerFlash{0%,10%{opacity:0;transform:scale(.4)}35%{opacity:.7;transform:scale(1.4)}100%{opacity:0;transform:scale(2.2)}}
 @media(prefers-reduced-motion:reduce){.reveal-beams span,.reveal-rings span,.scorer-countdown span,.player-stars i,.reveal-scorer.award-final .reveal-impact,.reveal-player.award-final .reveal-impact,.reveal-scorer.award-final .award-winner,.reveal-player.award-final .award-winner{animation:none!important}.scorer-countdown{display:none}}
+
+.gold-trophy{display:block;width:clamp(92px,13vw,180px);height:auto;margin:0 auto 12px;overflow:visible;filter:drop-shadow(0 0 17px rgba(255,196,79,.48)) drop-shadow(0 10px 12px rgba(0,0,0,.35));animation:trophyEntrance 1.2s cubic-bezier(.18,.85,.25,1) both}@keyframes trophyEntrance{from{opacity:0;transform:translateY(-28px) scale(.6) rotate(-8deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
