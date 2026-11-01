@@ -6,3 +6,5 @@
 .quiz-answer-0{background:#194d83}.quiz-answer-1{background:#883d34}.quiz-answer-2{background:#906620}.quiz-answer-3{background:#62438d}.quiz-editor-show{margin-top:18px}.quiz-editor-show-actions{display:flex;flex-wrap:wrap;gap:10px}
 
 .quiz-finish-button{background:linear-gradient(110deg,#e4a93a,#f8d67b);color:#1a2635;border:0;border-radius:9px;padding:12px 17px;font-weight:900;cursor:pointer}.quiz-finish-button:hover{filter:brightness(1.08)}
+
+.quiz-history{margin-top:24px;padding:18px;border:1px solid #527393;border-radius:14px;background:#0b2741}.quiz-history h4{margin:0 0 12px;font-size:17px}.quiz-history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #ffffff20;font-size:13px}.quiz-history-item button{background:#73313d;border:1px solid #c56778;color:#fff;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}@media(max-width:650px){.quiz-history-item{align-items:flex-start;flex-direction:column}}
