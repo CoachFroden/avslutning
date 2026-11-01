@@ -2,8 +2,8 @@ import admin from 'firebase-admin';
 import crypto from 'node:crypto';
 function db(){if(!admin.apps.length){admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))})}return admin.firestore()}
 function auth(req){const secret=process.env.SESSION_SECRET;if(!secret)return false;const token=(req.headers.cookie||'').match(/(?:^|; )g14_session=([^;]+)/)?.[1]||'';const [expiry,sig]=token.split('.');if(!expiry||!sig||!/^\d+$/.test(expiry)||Number(expiry)<Date.now())return false;const expected=crypto.createHmac('sha256',secret).update(expiry).digest('hex');return sig.length===expected.length&&crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))}
-const LIMIT_MS=15000,COUNTDOWN_MS=5000;
-const effectiveStage=s=>s.stage==='countdown'&&Date.now()>=startedMs(s)+COUNTDOWN_MS?'question':s.stage;
+const LIMIT_MS=15000,READY_MS=3000,COUNTDOWN_MS=5000;
+const effectiveStage=s=>s.stage==='countdown'&&Date.now()>=startedMs(s)+READY_MS+COUNTDOWN_MS?'question':s.stage;
 const startedMs=state=>state.startedAt?.toMillis?.()??(typeof state.startedAt==='number'?state.startedAt:0);
 const validName=n=>typeof n==='string'&&n.trim().length>=2&&n.trim().length<=60;
 export default async function handler(req,res){
@@ -15,9 +15,9 @@ export default async function handler(req,res){
  const state=(await session.get()).data()||{stage:'waiting',index:0,round:0};
  const questions=(await store.doc('settings/quiz').get()).data()?.questions||[];
  const q=questions[state.index];
- const stage=effectiveStage(state);const startedAt=startedMs(state);const countdownEndsAt=startedAt+COUNTDOWN_MS;const deadline=countdownEndsAt+LIMIT_MS;const expired=stage==='question'&&startedAt>0&&Date.now()>=deadline;
+ const stage=effectiveStage(state);const startedAt=startedMs(state);const readyEndsAt=startedAt+READY_MS;const countdownEndsAt=readyEndsAt+COUNTDOWN_MS;const deadline=countdownEndsAt+LIMIT_MS;const expired=stage==='question'&&startedAt>0&&Date.now()>=deadline;
  let leaderboard=[];if(stage==='finished'){const all=await answers.get();const board=new Map();all.docs.forEach(doc=>{const v=doc.data();if((v.sessionId||'legacy')!==(state.sessionId||'legacy'))return;const key=v.playerKey||v.name;const prev=board.get(key)||{name:v.name,points:0,correct:0};prev.points+=v.points||0;prev.correct+=(v.points||0)>0?1:0;board.set(key,prev)});leaderboard=[...board.values()].sort((a,b)=>b.points-a.points||b.correct-a.correct||a.name.localeCompare(b.name,'nb')).map((v,i)=>({...v,rank:i+1}));}
- const payload={revealAt:state.revealAt||null,leaderboard:stage==='finished'?leaderboard:undefined,serverNow:Date.now(),startedAt,deadline,countdownEndsAt,expired,stage,index:state.index,round:state.round||0,total:questions.length,question:stage==='question'||stage==='answer'?q?.question:null,options:stage==='question'||stage==='answer'?q?.answers:null,correct:state.stage==='answer'?q?.correct:null};
+ const payload={revealAt:state.revealAt||null,leaderboard:stage==='finished'?leaderboard:undefined,serverNow:Date.now(),startedAt,deadline,readyEndsAt,countdownEndsAt,expired,stage,index:state.index,round:state.round||0,total:questions.length,question:stage==='question'||stage==='answer'?q?.question:null,options:stage==='question'||stage==='answer'?q?.answers:null,correct:state.stage==='answer'?q?.correct:null};
  const playerName=String(req.query?.name||'').trim();if(validName(playerName)){const key=crypto.createHash('sha256').update(playerName.toLocaleLowerCase('nb-NO')).digest('hex');const mySnap=await answers.where('playerKey','==',key).get();payload.myAnswers=mySnap.docs.filter(d=>(d.data().sessionId||'legacy')===(state.sessionId||'legacy')).map(d=>({round:d.data().round,answer:d.data().answer,points:d.data().points||0}));payload.totalPoints=payload.myAnswers.reduce((n,a)=>n+a.points,0);if(stage==='finished')payload.myRank=leaderboard.find(v=>v.name.toLocaleLowerCase('nb-NO')===playerName.toLocaleLowerCase('nb-NO'))?.rank||null}
  if(auth(req)){const snap=await answers.where('round','==',state.round||0).get();const current=snap.docs.filter(d=>(d.data().sessionId||'legacy')===(state.sessionId||'legacy'));payload.responses=current.length;payload.counts=[0,0,0,0];current.forEach(d=>{const n=d.data().answer;if(n>=0&&n<4)payload.counts[n]++})}
  return res.status(200).json(payload)
@@ -31,11 +31,11 @@ export default async function handler(req,res){
  if(!auth(req))return res.status(401).json({error:'Kun administrator kan styre quizen'});
  const questions=(await store.doc('settings/quiz').get()).data()?.questions||[];
  if(!questions.length)return res.status(409).json({error:'Ingen lagrede spørsmål'});
- try{const next=await store.runTransaction(async tx=>{const snap=await tx.get(session),old=snap.data()||{};if(!['intro','waiting','countdown','answer'].includes(old.stage))throw Error('Start en ny quiz først');if(old.stage==='countdown'&&Date.now()<startedMs(old)+COUNTDOWN_MS+LIMIT_MS)throw Error('Vent til svartiden er ute');const index=['countdown','answer'].includes(old.stage)?old.index+1:0;if(index>=questions.length)throw Error('Alle spørsmål er stilt – avslutt quizen');const state={stage:'countdown',index,round:(old.round||0)+1,startedAt:Date.now(),sessionId:old.sessionId||crypto.randomUUID(),revealAt:null,updatedAt:admin.firestore.FieldValue.serverTimestamp()};tx.set(session,state);return state});return res.status(200).json({ok:true,stage:'countdown',index:next.index,round:next.round,startedAt:next.startedAt,countdownEndsAt:next.startedAt+COUNTDOWN_MS,deadline:next.startedAt+COUNTDOWN_MS+LIMIT_MS})}catch(e){return res.status(409).json({error:e.message})}
+ try{const next=await store.runTransaction(async tx=>{const snap=await tx.get(session),old=snap.data()||{};if(!['intro','waiting','countdown','answer'].includes(old.stage))throw Error('Start en ny quiz først');if(old.stage==='countdown'&&Date.now()<startedMs(old)+READY_MS+COUNTDOWN_MS+LIMIT_MS)throw Error('Vent til svartiden er ute');const index=['countdown','answer'].includes(old.stage)?old.index+1:0;if(index>=questions.length)throw Error('Alle spørsmål er stilt – avslutt quizen');const state={stage:'countdown',index,round:(old.round||0)+1,startedAt:Date.now(),sessionId:old.sessionId||crypto.randomUUID(),revealAt:null,updatedAt:admin.firestore.FieldValue.serverTimestamp()};tx.set(session,state);return state});return res.status(200).json({ok:true,stage:'countdown',index:next.index,round:next.round,startedAt:next.startedAt,readyEndsAt:next.startedAt+READY_MS,countdownEndsAt:next.startedAt+READY_MS+COUNTDOWN_MS,deadline:next.startedAt+READY_MS+COUNTDOWN_MS+LIMIT_MS})}catch(e){return res.status(409).json({error:e.message})}
  }
  if(req.body?.action==='show-answer'){
  if(!auth(req))return res.status(401).json({error:'Kun administrator kan vise svaret'});
- try{await store.runTransaction(async tx=>{const snap=await tx.get(session),old=snap.data()||{};if(old.stage!=='countdown'||Date.now()<startedMs(old)+COUNTDOWN_MS+LIMIT_MS)throw Error('Vent til svartiden er ute');tx.update(session,{stage:'answer',updatedAt:admin.firestore.FieldValue.serverTimestamp()})});return res.status(200).json({ok:true,stage:'answer'})}catch(e){return res.status(409).json({error:e.message})}
+ try{await store.runTransaction(async tx=>{const snap=await tx.get(session),old=snap.data()||{};if(old.stage!=='countdown'||Date.now()<startedMs(old)+READY_MS+COUNTDOWN_MS+LIMIT_MS)throw Error('Vent til svartiden er ute');tx.update(session,{stage:'answer',updatedAt:admin.firestore.FieldValue.serverTimestamp()})});return res.status(200).json({ok:true,stage:'answer'})}catch(e){return res.status(409).json({error:e.message})}
  }
  if(req.body?.action==='stage'){
  if(!auth(req))return res.status(401).json({error:'Kun administrator kan styre quizen'});
@@ -58,7 +58,7 @@ export default async function handler(req,res){
  await store.runTransaction(async tx=>{
  const snap=await tx.get(session),state=snap.data()||{};
  if(effectiveStage(state)!=='question'||state.round!==round)throw Error('Dette spørsmålet er stengt');
- const startedAt=startedMs(state);const elapsed=Date.now()-startedAt-COUNTDOWN_MS;
+ const startedAt=startedMs(state);const elapsed=Date.now()-startedAt-READY_MS-COUNTDOWN_MS;
  if(!startedAt||elapsed<0||elapsed>=LIMIT_MS)throw Error('Tiden er ute! Du fikk 0 poeng.');
  const questionSnap=await tx.get(store.doc('settings/quiz'));const correct=questionSnap.data()?.questions?.[state.index]?.correct;
  const points=answer===correct?Math.max(0,Math.floor(1000*(LIMIT_MS-elapsed)/LIMIT_MS)):0;
