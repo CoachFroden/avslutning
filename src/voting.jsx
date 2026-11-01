@@ -1,3 +1,4 @@
+import './voting.css';
 import React,{useEffect,useState} from 'react';
 import {Trophy,CheckCircle2,ArrowLeft,RefreshCw,Trash2,Copy,MonitorPlay,Lock,Unlock} from 'lucide-react';
 export function VoteBackground({children}){return <div className="vote-scene"><div className="vote-lights"/><div className="vote-grid"/><div className="vote-orb orb-one"/><div className="vote-orb orb-two"/><div className="vote-content">{children}</div></div>}
