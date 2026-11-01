@@ -52,3 +52,12 @@
 .quiz-display .quiz-reveal-place strong{font-size:clamp(17px,2.6vw,31px)}
 .quiz-display .quiz-reveal-place b{font-size:clamp(13px,1.6vw,21px)}
 @media(max-width:650px){.quiz-display .quiz-podium-reveal{gap:6px}.quiz-display .quiz-reveal-place{padding:10px 5px;min-height:140px}.quiz-display .quiz-reveal-rank{letter-spacing:0;font-size:11px}}
+
+/* Calm fog entrance before the question countdown */
+.quiz-display .quiz-precount.quiz-ready{position:relative;isolation:isolate;overflow:hidden;min-height:55vh;width:min(100%,1100px);border-radius:24px;display:grid;place-items:center;background:radial-gradient(ellipse at center,#1e496b 0%,#081d36 75%);animation:none}
+.quiz-ready-message{position:relative;z-index:3;font-family:Manrope,Inter,sans-serif;font-weight:900;letter-spacing:.13em;font-size:clamp(28px,5vw,72px);color:#f4f8ff;text-shadow:0 0 25px #d8f0ff99,0 0 80px #9bd4ff66;animation:quizFogReveal 2.8s ease-out both;text-align:center;padding:20px}
+.quiz-fog{position:absolute;inset:-45%;border-radius:50%;pointer-events:none;opacity:.8;filter:blur(55px);background:radial-gradient(ellipse,#d8e9f4aa 0%,#a9c7d977 24%,#8bb0c744 48%,transparent 70%);animation:quizFogDrift 4.5s ease-out both}
+.quiz-fog-one{transform-origin:20% 40%;animation-delay:0s}.quiz-fog-two{transform-origin:80% 65%;animation-delay:.25s;filter:blur(75px)}.quiz-fog-three{transform-origin:45% 85%;animation-delay:.45s;filter:blur(95px)}
+@keyframes quizFogReveal{0%{opacity:0;filter:blur(32px);transform:scale(.92)}40%{opacity:.35;filter:blur(18px)}100%{opacity:1;filter:blur(0);transform:scale(1)}}
+@keyframes quizFogDrift{0%{opacity:.95;scale:1.15}100%{opacity:.25;scale:1.8}}
+@media(prefers-reduced-motion:reduce){.quiz-ready-message,.quiz-fog{animation:none;filter:none}}
