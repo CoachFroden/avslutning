@@ -8,7 +8,7 @@ export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');
  try{
  const ref=db().doc('settings/quiz');
- if(req.method==='GET'){const snap=await ref.get();return res.status(200).json({questions:snap.exists?(snap.data()?.questions||[]):fallback})}
+ if(req.method==='GET'){const snap=await ref.get();return res.status(200).json({questions:snap.exists?(snap.data()?.questions||[]):fallback,storage:{document:'settings/quiz',exists:snap.exists,count:snap.exists?(snap.data()?.questions||[]).length:0}})}
  if(!authorized(req))return res.status(401).json({error:'Du må være logget inn som administrator'});
  if(req.method!=='PUT')return res.status(405).json({error:'Metoden støttes ikke'});
  const input=req.body?.questions;
