@@ -61,3 +61,23 @@
 @keyframes quizFogReveal{0%{opacity:0;filter:blur(32px);transform:scale(.92)}40%{opacity:.35;filter:blur(18px)}100%{opacity:1;filter:blur(0);transform:scale(1)}}
 @keyframes quizFogDrift{0%{opacity:.95;scale:1.15}100%{opacity:.25;scale:1.8}}
 @media(prefers-reduced-motion:reduce){.quiz-ready-message,.quiz-fog{animation:none;filter:none}}
+
+/* Cinematic winner ceremony: podium first, names much later */
+.quiz-display .quiz-podium-reveal.quiz-ceremony{display:grid;grid-template-columns:1fr 1.12fr 1fr;align-items:end;gap:clamp(8px,1.6vw,24px);width:min(100%,1050px);max-width:1050px;margin:clamp(12px,2vh,24px) auto 0;animation:quizCeremonyAppear 5.5s ease-out both}
+.quiz-display .quiz-ceremony-place{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:clamp(6px,1vh,12px);min-height:clamp(200px,35vh,380px);padding:clamp(12px,2vh,24px) 10px 0;border-radius:18px 18px 4px 4px;overflow:hidden;animation:none;opacity:1;transform:none;background:linear-gradient(165deg,#203d59,#0a1a31 78%)}
+.quiz-display .quiz-ceremony-place.reveal-rank-0{min-height:clamp(240px,43vh,460px);border-color:#f6d47c;background:linear-gradient(160deg,#554522,#152e49 75%);box-shadow:0 0 40px #e8c45a33}
+.quiz-display .quiz-ceremony-place.reveal-rank-1{border-color:#c6d6e4}
+.quiz-display .quiz-ceremony-place.reveal-rank-2{min-height:clamp(180px,30vh,340px);border-color:#c89c70}
+.quiz-display .quiz-ceremony-place .quiz-reveal-medal{font-size:clamp(35px,5vw,72px)}
+.quiz-display .quiz-ceremony-place .quiz-reveal-rank{font-size:clamp(12px,1.5vw,20px);color:#f7e6ba}
+.quiz-display .quiz-winner-details{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;min-height:clamp(65px,12vh,125px);width:100%;text-align:center}
+.quiz-display .quiz-winner-details.is-waiting{visibility:hidden}
+.quiz-display .quiz-winner-details.is-visible{visibility:visible;animation:quizWinnerSlowReveal 5.5s ease-in-out both}
+.quiz-display .quiz-winner-details strong{font-size:clamp(17px,2.3vw,33px);line-height:1.2}
+.quiz-display .quiz-winner-details b{font-size:clamp(13px,1.6vw,21px)}
+.quiz-display .quiz-podium-step{font-family:Manrope,Inter,sans-serif;font-size:clamp(32px,6vw,80px);font-weight:900;line-height:1;width:100%;padding:clamp(12px,2vh,25px) 0;background:#ffffff12;color:#ffffffc9;text-align:center}
+.quiz-display .quiz-ceremony-place.reveal-rank-0 .quiz-podium-step{background:#e9bd4d33;color:#ffe4a1}
+@keyframes quizCeremonyAppear{0%{opacity:0;filter:blur(35px);transform:translateY(35px)}35%{opacity:.15;filter:blur(22px)}100%{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes quizWinnerSlowReveal{0%{opacity:0;filter:blur(26px);transform:scale(.93)}35%{opacity:.08;filter:blur(20px)}75%{opacity:.65;filter:blur(5px)}100%{opacity:1;filter:blur(0);transform:scale(1)}}
+@media(max-height:700px){.quiz-display .quiz-ceremony-place{min-height:190px}.quiz-display .quiz-ceremony-place.reveal-rank-0{min-height:235px}.quiz-display .quiz-ceremony-place.reveal-rank-2{min-height:170px}}
+@media(prefers-reduced-motion:reduce){.quiz-display .quiz-podium-reveal.quiz-ceremony,.quiz-display .quiz-winner-details.is-visible{animation:none}}
