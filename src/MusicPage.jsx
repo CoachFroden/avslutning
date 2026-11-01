@@ -27,6 +27,6 @@ export default function MusicPage({onBack}){
  {error&&<p className="music-error" role="alert">{error}</p>}</div></div><div className={"music-finale "+(finale?"is-visible":"")+(finaleMessage?" show-message":"")} aria-hidden={!finale}><div className="music-fog music-fog-one"/><div className="music-fog music-fog-two"/><div className="music-fog music-fog-three"/><div className="music-finale-copy"><div className="music-finale-rule"/><h2>Takk for en fantastisk sesong, <em>gutter!</em></h2><p>SAMNANGER G14 · 2026</p></div></div>{finale&&<button className="music-finale-replay" onClick={restart}><RotateCcw size={17}/> Spill sangen på nytt</button>}
  <div className="music-stage-bottom">LYDEN SPILLES PÅ DENNE PC-EN · KOBLE PC-EN TIL LYDANLEGGET</div>
  </div>
- <audio ref={audio} src={SONG} preload="metadata" onLoadedMetadata={e=>setDuration(e.currentTarget.duration)} onTimeUpdate={e=>setTime(e.currentTarget.currentTime)} onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={()=>{setPlaying(false);setTime(0)}} onError={()=>setError('Fant ikke lydfilen. Kontroller at MP3-filen ligger i public i GitHub.')}/>
+ <audio ref={audio} src={SONG} preload="metadata" onLoadedMetadata={e=>setDuration(e.currentTarget.duration)} onTimeUpdate={e=>setTime(e.currentTarget.currentTime)} onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={()=>{setPlaying(false);setTime(audio.current?.duration||duration)}} onError={()=>setError('Fant ikke lydfilen. Kontroller at MP3-filen ligger i public i GitHub.')}/>
  </section>
 }
