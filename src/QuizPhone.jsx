@@ -1,10 +1,38 @@
 import React,{useEffect,useState} from 'react';
+import {Zap,Trophy,Timer,CheckCircle2,XCircle,Clock3} from 'lucide-react';
 import './quiz-phone.css';
+const playerKey='g14_quiz_player';
 export default function QuizPhone(){
- const [name,setName]=useState(()=>localStorage.getItem('g14_quiz_player')||''),[draft,setDraft]=useState(name),[live,setLive]=useState(null),[choice,setChoice]=useState(null),[sent,setSent]=useState({}),[error,setError]=useState(''),[sending,setSending]=useState(false);
- useEffect(()=>{let active=true;const load=()=>fetch('/api/quiz-live',{cache:'no-store'}).then(r=>r.json()).then(d=>{if(active)setLive(d)}).catch(()=>{});load();const timer=setInterval(load,1500);return()=>{active=false;clearInterval(timer)}},[]);
- useEffect(()=>setChoice(null),[live?.round]);
- const submit=async()=>{setSending(true);setError('');try{const r=await fetch('/api/quiz-live',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'answer',name,answer:choice,round:live.round})});const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke sende svar');setSent(v=>({...v,[live.round]:choice}))}catch(e){setError(e.message)}finally{setSending(false)}};
- const registered=!!name,answered=live&&Object.hasOwn(sent,live.round);
- return <main className="quiz-phone"><div className="phone-card"><div className="phone-kicker">SAMNANGER G14 · 2026</div><h1>Lagquizen</h1>{!registered?<><p>Skriv inn navnet ditt for å bli med.</p><form onSubmit={e=>{e.preventDefault();if(draft.trim().length>=2){localStorage.setItem('g14_quiz_player',draft.trim());setName(draft.trim())}}}><input maxLength={60} value={draft} onChange={e=>setDraft(e.target.value)} placeholder="Fornavn og etternavn" required minLength={2}/><button>Jeg er klar!</button></form></>:<><p>Spiller: <strong>{name}</strong> <button className="phone-link" onClick={()=>{setName('');setDraft('');localStorage.removeItem('g14_quiz_player')}}>Bytt navn</button></p>{!live||['waiting','intro'].includes(live.stage)?<div className="phone-wait">Du er med! Vent på neste spørsmål på storskjermen.</div>:<><div className="phone-number">SPØRSMÅL {live.index+1} AV {live.total}</div><h2>{live.question}</h2><div className="phone-answers">{(live.options||[]).map((a,i)=><button key={i} disabled={answered||live.stage!=='question'} className={'phone-answer '+(choice===i?'selected ':'')+(live.stage==='answer'&&live.correct===i?'correct':'')} onClick={()=>setChoice(i)}><b>{'ABCD'[i]}</b>{a}</button>)}</div>{live.stage==='answer'?<div className="phone-wait">Riktig svar: {live.options?.[live.correct]}{answered?<p>{sent[live.round]===live.correct?'Du svarte riktig!':'Du svarte feil denne gangen.'}</p>:null}</div>:answered?<div className="phone-wait">Svaret ditt er registrert! Vent på fasiten.</div>:<button disabled={choice===null||sending} onClick={submit}>{sending?'Sender …':'Send mitt svar'}</button>}</>}{error&&<p role="alert" className="phone-error">{error}</p>}</>}</div></main>
+ const [name,setName]=useState(()=>localStorage.getItem(playerKey)||'');
+ const [draft,setDraft]=useState(name),[live,setLive]=useState(null),[choice,setChoice]=useState(null),[error,setError]=useState(''),[sending,setSending]=useState(false),[now,setNow]=useState(Date.now());
+ useEffect(()=>{let active=true;const load=()=>fetch('/api/quiz-live?name='+encodeURIComponent(name),{cache:'no-store'}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke hente quiz');if(active)setLive({...d,offset:d.serverNow-Date.now()})}).catch(e=>{if(active)setError(e.message)});load();const t=setInterval(load,1100);return()=>{active=false;clearInterval(t)}},[name]);
+ useEffect(()=>{const t=setInterval(()=>setNow(Date.now()),100);return()=>clearInterval(t)},[]);
+ useEffect(()=>{setChoice(null);setError('')},[live?.round]);
+ const history=live?.myAnswers||[];
+ const own=history.find(a=>a.round===live?.round);
+ const remaining=live?.deadline?Math.max(0,live.deadline-(now+(live.offset||0))):0;
+ const seconds=Math.ceil(remaining/1000);
+ const expired=!!live?.expired||!!live?.deadline&&remaining<=0;
+ const pointsAvailable=Math.floor(1000*remaining/15000);
+ const closed=live?.stage!=='question'||expired;
+ const submit=async()=>{if(choice===null||closed||own||sending)return;setSending(true);setError('');try{const r=await fetch('/api/quiz-live',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'answer',name,answer:choice,round:live.round})});const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke sende svar');const updated=await fetch('/api/quiz-live?name='+encodeURIComponent(name),{cache:'no-store'}).then(r=>r.json());setLive({...updated,offset:updated.serverNow-Date.now()})}catch(e){setError(e.message)}finally{setSending(false)}};
+ const register=e=>{e.preventDefault();if(draft.trim().length<2)return;localStorage.setItem(playerKey,draft.trim());setName(draft.trim())};
+ const stage=live?.stage,showQuestion=stage==='question'||stage==='answer';
+ const outcome=own?(own.points>0?'correct':'wrong'):(expired||stage==='answer'?'timeout':null);
+ return <main className="quiz-phone"><div className="phone-sparkles" aria-hidden="true">{Array.from({length:17},(_,i)=><i key={i} style={{'--x':(i*37%100)+'%','--y':(i*29%100)+'%','--delay':(i*.31)+'s'}}/>)}</div><section className="phone-card">
+ <div className="phone-kicker"><Zap size={15}/> SAMNANGER G14 · 2026</div><div className="phone-heading"><h1>LAG<span>QUIZEN</span></h1><span className="phone-bolt">⚡</span></div>
+ {!name?<><p>Bli med og kjemp om poengene!</p><form onSubmit={register}><input maxLength={60} value={draft} onChange={e=>setDraft(e.target.value)} placeholder="Navnet ditt" required minLength={2}/><button className="phone-submit">BLI MED!</button></form></>:<>
+ <div className="phone-player"><span>SPILLER <strong>{name}</strong></span><button className="phone-link" onClick={()=>{setName('');setDraft('');localStorage.removeItem(playerKey)}}>Bytt navn</button></div>
+ {!showQuestion?<div className="phone-wait phone-pulse"><Zap size={28}/> <strong>GJØR DEG KLAR!</strong><span>Følg med på storskjermen. Neste spørsmål kommer snart.</span></div>:<div key={live.round} className="phone-question-enter">
+ <div className="phone-round"><span>SPØRSMÅL {live.index+1} / {live.total}</span><span>MAKS 1000 POENG</span></div>
+ <div className={'phone-clock '+(seconds<=5?'urgent':'')}><Timer size={22}/><strong>{String(seconds).padStart(2,'0')}</strong><span>SEKUNDER</span><div className="phone-clock-points">{own?own.points:closed?0:pointsAvailable} <small>mulige poeng</small></div></div>
+ <div className="phone-timer-track"><div style={{width:(remaining/150)+'%'}}/></div>
+ <h2>{live.question}</h2>
+ <div className="phone-answers">{(live.options||[]).map((a,i)=><button key={i} disabled={!!own||closed||sending} className={'phone-answer '+(choice===i?'selected ':'')+(stage==='answer'&&live.correct===i?'correct':'')} onClick={()=>setChoice(i)}><b>{'ABCD'[i]}</b><span>{a}</span></button>)}</div>
+ {outcome==='correct'?<div className="phone-result good"><CheckCircle2/> RIKTIG! +{own.points} POENG 🎉</div>:outcome==='wrong'?<div className="phone-result bad"><XCircle/> FEIL SVAR – 0 POENG</div>:outcome==='timeout'?<div className="phone-result bad"><Clock3/> TIDEN ER UTE – 0 POENG</div>:own?<div className="phone-result pending"><CheckCircle2/> Svaret er registrert!</div>:<button className="phone-submit" disabled={choice===null||closed||sending} onClick={submit}>{sending?'SENDER …':'LÅS INN SVARET →'}</button>}
+ {stage==='answer'&&<div className="phone-reveal">RIKTIG SVAR: <strong>{'ABCD'[live.correct]} · {live.options?.[live.correct]}</strong></div>}
+ </div>}
+ {error&&<div role="alert" className="phone-error">{error}</div>}
+ <div className="phone-score"><div><Trophy size={23}/><span>DIN TOTALSCORE</span></div><strong>{(live?.totalPoints||0).toLocaleString('nb-NO')} <small>POENG</small></strong><p>{history.filter(a=>a.points>0).length} riktige svar · {history.length} besvarte</p></div>
+ </>}</section></main>
 }
