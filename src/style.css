@@ -81,3 +81,23 @@
 @keyframes quizWinnerSlowReveal{0%{opacity:0;filter:blur(26px);transform:scale(.93)}35%{opacity:.08;filter:blur(20px)}75%{opacity:.65;filter:blur(5px)}100%{opacity:1;filter:blur(0);transform:scale(1)}}
 @media(max-height:700px){.quiz-display .quiz-ceremony-place{min-height:190px}.quiz-display .quiz-ceremony-place.reveal-rank-0{min-height:235px}.quiz-display .quiz-ceremony-place.reveal-rank-2{min-height:170px}}
 @media(prefers-reduced-motion:reduce){.quiz-display .quiz-podium-reveal.quiz-ceremony,.quiz-display .quiz-winner-details.is-visible{animation:none}}
+
+/* Championship stage: sculpted podium with dramatic lighting */
+.quiz-display .quiz-ceremony{position:relative;isolation:isolate;perspective:1100px;padding:30px 18px 16px;overflow:visible}
+.quiz-display .quiz-ceremony-place{z-index:2;overflow:visible;isolation:isolate;border:1px solid #ffffff4a;border-bottom:0;box-shadow:inset 0 2px 0 #ffffff44,inset 0 -30px 55px #0006,0 25px 30px #0009,12px 14px 0 #050d1e;transform:rotateX(2deg);border-radius:20px 20px 3px 3px;background:linear-gradient(110deg,#263e59 0%,#395571 12%,#152940 48%,#0a1729 100%)}
+.quiz-display .quiz-ceremony-place.reveal-rank-0{z-index:4;background:linear-gradient(112deg,#80612b 0%,#c69b42 9%,#66502e 30%,#1b2e44 78%,#091729 100%);border-color:#ffe6a2;box-shadow:inset 0 3px 0 #fff0bf99,inset 0 -40px 70px #0007,0 0 60px #f4bd4240,0 30px 40px #000a,14px 16px 0 #1d160c}
+.quiz-display .quiz-ceremony-place.reveal-rank-1{background:linear-gradient(112deg,#718b9e,#c2d5e2 9%,#425a6e 27%,#172a3e 80%,#091627)}
+.quiz-display .quiz-ceremony-place.reveal-rank-2{background:linear-gradient(112deg,#8d5736,#cf9768 9%,#65422f 28%,#17283b 80%,#091627)}
+.quiz-display .quiz-medal-halo{position:absolute;top:clamp(4px,1vh,14px);left:50%;width:clamp(90px,12vw,165px);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#fff7cd50 0%,#ffe19c22 36%,transparent 70%);filter:blur(8px);pointer-events:none;z-index:-1}
+.quiz-display .quiz-reveal-medal{position:relative;z-index:2;filter:drop-shadow(0 0 15px #ffe7a088) drop-shadow(0 9px 7px #0008)}
+.quiz-display .quiz-podium-step{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:clamp(66px,11vh,110px);background:linear-gradient(125deg,#ffffff38,#ffffff08 36%,#0005 100%);border-top:2px solid #ffffff65;box-shadow:inset 0 8px 18px #ffffff12,inset 0 -12px 20px #0005;text-shadow:0 3px 10px #000a}
+.quiz-display .quiz-ceremony-place.reveal-rank-0 .quiz-podium-step{background:linear-gradient(120deg,#ffe7a477,#b88a2e33 40%,#1b140c99)}
+.quiz-display .quiz-podium-step .quiz-step-number{position:relative;z-index:2;font-size:clamp(42px,6vw,86px);font-weight:1000;line-height:1}
+.quiz-display .quiz-podium-step small{position:relative;z-index:2;font-size:clamp(7px,.7vw,11px);letter-spacing:.2em;color:#e4edf6;font-weight:800}
+.quiz-display .quiz-step-shine{position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,#ffffff33 45%,transparent 65%);transform:translateX(-150%);animation:quizStageShimmer 9s ease-in-out infinite}
+.quiz-stage-light{position:absolute;top:-25%;height:120%;width:38%;z-index:0;pointer-events:none;opacity:.4;filter:blur(18px);background:linear-gradient(180deg,#d6eaff77,transparent 85%);clip-path:polygon(48% 0,52% 0,100% 100%,0 100%)}
+.quiz-stage-light-left{left:-10%;transform:rotate(-17deg);transform-origin:top center}.quiz-stage-light-right{right:-10%;transform:rotate(17deg);transform-origin:top center}
+.quiz-stage-stars{position:absolute;z-index:1;top:-16px;left:0;width:100%;text-align:center;color:#f9d88a;font-size:clamp(16px,2.5vw,32px);letter-spacing:clamp(30px,9vw,140px);text-shadow:0 0 22px #fbd983}
+@keyframes quizStageShimmer{0%,20%{transform:translateX(-150%)}45%,100%{transform:translateX(150%)}}
+@media(max-width:650px){.quiz-display .quiz-ceremony{padding:18px 4px 8px}.quiz-display .quiz-ceremony-place{box-shadow:inset 0 2px 0 #ffffff44,5px 8px 0 #071021}.quiz-display .quiz-ceremony-place.reveal-rank-0{box-shadow:inset 0 2px 0 #fff0bf99,6px 8px 0 #24190c}.quiz-display .quiz-podium-step small{letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.quiz-display .quiz-step-shine{animation:none}}
