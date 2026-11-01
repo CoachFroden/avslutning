@@ -18,3 +18,50 @@
 .phone-card .phone-answers .phone-answer:active:not(:disabled){transform:scale(.98)}
 .phone-card>button:not(.phone-link){background:linear-gradient(115deg,#64c9ff,#3096f4)}
 @media(max-width:650px){.quiz-phone{background:radial-gradient(ellipse at 50% 0%,#1a4573,#081a33 80%)}.phone-card{box-shadow:0 10px 35px #0003}.phone-card .phone-answers .phone-answer{min-height:57px}}
+
+/* 2026 quiz game-show experience */
+.quiz-phone{position:relative;isolation:isolate;overflow:hidden;padding-bottom:36px}
+.phone-sparkles{position:fixed;inset:0;pointer-events:none;z-index:-1}
+.phone-sparkles i{position:absolute;left:var(--x);top:var(--y);height:3px;width:3px;background:#89d6ff;border-radius:50%;box-shadow:0 0 12px #4bc6ff;animation:phoneTwinkle 2.8s ease-in-out var(--delay) infinite alternate}
+@keyframes phoneTwinkle{from{opacity:.12;transform:scale(.7)}to{opacity:.9;transform:scale(1.8)}}
+.phone-card{position:relative;overflow:hidden}
+.phone-card:before{content:"";position:absolute;left:-45%;top:-200px;width:190%;height:260px;background:radial-gradient(ellipse,#37a9ff22,transparent 65%);pointer-events:none;animation:phoneAura 6s ease-in-out infinite alternate}
+@keyframes phoneAura{to{transform:translateX(15%) scale(1.12)}}
+.phone-kicker{display:flex;align-items:center;gap:8px}
+.phone-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.phone-heading h1{font-weight:1000;letter-spacing:-1.5px;font-size:35px;margin:8px 0 12px}
+.phone-heading h1 span{color:#63c7ff}
+.phone-bolt{font-size:32px;filter:drop-shadow(0 0 14px #ffe175);animation:phoneBolt 2.4s ease-in-out infinite}
+@keyframes phoneBolt{50%{transform:rotate(12deg) scale(1.15)}}
+.phone-player{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#081e38a8;border:1px solid #3a658e;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:13px}
+.phone-player span{color:#a8c8e7}.phone-player strong{color:#fff;margin-left:6px}
+.phone-round{display:flex;justify-content:space-between;gap:8px;color:#a5d7ff;font-size:11px;font-weight:900;letter-spacing:.8px;margin:10px 0}
+.phone-clock{display:flex;align-items:center;gap:7px;background:linear-gradient(110deg,#114c7a,#133b64);border:1px solid #458db9;border-radius:12px;padding:9px 12px;color:#c8edff}
+.phone-clock>strong{font-size:34px;line-height:1;font-variant-numeric:tabular-nums;color:white}
+.phone-clock>span{font-size:10px;font-weight:900;letter-spacing:1px}
+.phone-clock-points{margin-left:auto;text-align:right;font-size:22px;font-weight:1000;color:#ffe17a;font-variant-numeric:tabular-nums}
+.phone-clock-points small{display:block;font-size:10px;color:#b5d4ed;font-weight:600}
+.phone-clock.urgent{border-color:#ff755e;background:linear-gradient(110deg,#77313a,#43213c);animation:phoneUrgent .7s ease-in-out infinite alternate}
+@keyframes phoneUrgent{to{box-shadow:0 0 18px #ff5a5a77}}
+.phone-timer-track{height:7px;background:#09233d;border-radius:99px;overflow:hidden;margin:8px 0 13px}
+.phone-timer-track>div{height:100%;border-radius:99px;background:linear-gradient(90deg,#ffd35c,#6de9ff);transition:width .1s linear}
+.phone-question-enter{animation:phoneEnter .35s ease-out both}
+@keyframes phoneEnter{from{opacity:.5;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.phone-card .phone-submit{background:linear-gradient(105deg,#ffe57a,#ffb92d)!important;color:#1d2637!important;box-shadow:0 5px 0 #a06c19,0 10px 25px #0004;letter-spacing:.6px}
+.phone-card .phone-submit:disabled{opacity:.48;box-shadow:none}
+.phone-result{display:flex;align-items:center;gap:10px;border-radius:12px;padding:13px;font-size:15px;font-weight:900;animation:phoneEnter .35s ease-out}
+.phone-result svg{flex-shrink:0}.phone-result.good{background:#11684e;color:#a6ffcb;border:1px solid #53dc9b}
+.phone-result.bad{background:#762f42;color:#ffe2e7;border:1px solid #ed8292}
+.phone-result.pending{background:#15527a;color:#c4edff;border:1px solid #57b8ed}
+.phone-reveal{padding:12px;background:#08273f;border-radius:10px;margin-top:10px;color:#8dd7ff;font-size:12px;font-weight:800}
+.phone-reveal strong{display:block;color:white;font-size:16px;margin-top:4px}
+.phone-score{margin-top:18px;background:linear-gradient(125deg,#183e61,#0a223d);border:1px solid #c79b4e;border-radius:15px;padding:15px;box-shadow:inset 0 1px #ffffff22}
+.phone-score>div{display:flex;align-items:center;gap:9px;color:#ffd678;font-size:12px;font-weight:900;letter-spacing:1.2px}
+.phone-score>strong{display:block;color:white;font-size:36px;line-height:1.2;margin-top:6px;font-variant-numeric:tabular-nums}
+.phone-score>strong small{font-size:13px;color:#ffd678}
+.phone-score p{margin:4px 0 0;color:#a7c6e0;font-size:12px}
+.phone-wait.phone-pulse{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;animation:phoneWait 2s ease-in-out infinite alternate}
+.phone-wait.phone-pulse span{font-size:13px}
+@keyframes phoneWait{to{border-color:#85d9ff;box-shadow:0 0 25px #46b6ff33}}
+@media(max-width:650px){.phone-heading h1{font-size:29px}.phone-bolt{font-size:27px}.phone-card h2{font-size:19px;margin:10px 0}.phone-card .phone-answers .phone-answer{min-height:52px}.phone-answers{gap:8px;margin:10px 0}.phone-score{margin-top:13px;padding:12px}.phone-score>strong{font-size:30px}.phone-clock>strong{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.quiz-phone *,.quiz-phone *:before{animation:none!important;transition:none!important}}
