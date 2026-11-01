@@ -1,3 +1,4 @@
+import './award-stages.css';
 import './awards.css';
 import React,{useEffect,useState} from 'react';import{createRoot}from'react-dom/client';import{LockKeyhole,MonitorPlay,Film,Trophy,Vote,Gamepad2,Images,LogOut,ExternalLink,Eye,ShieldCheck,Copy}from'lucide-react';import './style.css';import {Ballot,VoteAdmin} from './voting.jsx';
 const tiles=[['Avslutningsfilm','Video og musikk',Film],['Priser og utdelinger','Hyllest til spillerne',Trophy],['Årets spiller','Avstemning og resultater',Vote],['Quiz','Spørsmål og poeng',Gamepad2],['Bilder og klipp','Mediebibliotek',Images],['Storskjerm','Publikumsvisning',MonitorPlay]];
