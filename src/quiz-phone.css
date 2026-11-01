@@ -2,3 +2,19 @@
 /* Mobile-first compact layout: keep the answer and submit button above browser chrome */
 @media(max-width:650px){.quiz-phone{min-height:100dvh;padding:12px 12px 95px;display:block}.phone-card{width:100%;padding:18px 16px 22px;border-radius:18px;box-shadow:none}.phone-kicker{font-size:10px;letter-spacing:1.5px}.phone-card h1{font-size:30px;margin:8px 0 10px}.phone-card p{font-size:14px;margin:8px 0 14px}.phone-card h2{font-size:20px;line-height:1.25;margin:10px 0 14px}.phone-number{font-size:11px;margin-top:14px}.phone-answers{gap:8px;margin:12px 0}.phone-card .phone-answer{padding:11px 13px!important;min-height:56px;font-size:16px;gap:12px;border-radius:10px}.phone-answer b{padding:7px 10px}.phone-card button:not(.phone-link){padding:13px;font-size:16px}.phone-wait{padding:15px;margin:12px 0}.phone-card input{padding:13px}}
 @media(max-width:380px){.phone-card{padding:14px 12px}.phone-card h1{font-size:27px}.phone-card h2{font-size:18px}.phone-card .phone-answer{min-height:50px;padding:9px 11px!important}}
+
+/* Game-show answer palette and tactile feedback */
+.quiz-phone{background:radial-gradient(ellipse at 50% 0%,#1b4778 0%,#0c2443 48%,#061329 100%)}
+.phone-card{background:linear-gradient(155deg,#15395d 0%,#102846 72%);border:1px solid #5382b0;box-shadow:0 15px 45px #0003}
+.phone-card h1{color:#fff;text-shadow:0 4px 22px #67baff55}
+.phone-card .phone-answers .phone-answer{position:relative;overflow:hidden;color:#fff!important;border:2px solid transparent!important;transition:transform .12s ease,border-color .12s ease,filter .12s ease;box-shadow:inset 0 1px #ffffff29,0 4px 10px #0002}
+.phone-card .phone-answers .phone-answer:nth-child(1){background:linear-gradient(115deg,#2168bb,#16478c)!important}
+.phone-card .phone-answers .phone-answer:nth-child(2){background:linear-gradient(115deg,#d54848,#9e2733)!important}
+.phone-card .phone-answers .phone-answer:nth-child(3){background:linear-gradient(115deg,#d59a23,#a56c0e)!important}
+.phone-card .phone-answers .phone-answer:nth-child(4){background:linear-gradient(115deg,#9055c7,#65349f)!important}
+.phone-card .phone-answers .phone-answer b{background:#071b37a8;color:#fff;border:1px solid #ffffff35;min-width:40px;text-align:center}
+.phone-card .phone-answers .phone-answer.selected{border-color:#fff!important;box-shadow:0 0 0 2px #ffffff55,0 0 25px #9dd5ff66,inset 0 1px #ffffff66;transform:scale(1.012);filter:brightness(1.15)}
+.phone-card .phone-answers .phone-answer.correct{background:linear-gradient(115deg,#198c58,#0c603b)!important;border-color:#8cf9c0!important}
+.phone-card .phone-answers .phone-answer:active:not(:disabled){transform:scale(.98)}
+.phone-card>button:not(.phone-link){background:linear-gradient(115deg,#64c9ff,#3096f4)}
+@media(max-width:650px){.quiz-phone{background:radial-gradient(ellipse at 50% 0%,#1a4573,#081a33 80%)}.phone-card{box-shadow:0 10px 35px #0003}.phone-card .phone-answers .phone-answer{min-height:57px}}
