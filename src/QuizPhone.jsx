@@ -29,7 +29,7 @@ export default function QuizPhone(){
  <div className="phone-timer-track"><div style={{width:(remaining/150)+'%'}}/></div>
  <h2>{live.question}</h2>
  <div className="phone-answers">{(live.options||[]).map((a,i)=><button key={i} disabled={!!own||closed||sending} className={'phone-answer '+(choice===i?'selected ':'')+(stage==='answer'&&live.correct===i?'correct':'')} onClick={()=>setChoice(i)}><b>{'ABCD'[i]}</b><span>{a}</span></button>)}</div>
- {outcome==='correct'?<div className="phone-result good"><CheckCircle2/> RIKTIG! +{own.points} POENG 🎉</div>:outcome==='wrong'?<div className="phone-result bad"><XCircle/> FEIL SVAR – 0 POENG</div>:outcome==='timeout'?<div className="phone-result bad"><Clock3/> TIDEN ER UTE – 0 POENG</div>:own?<div className="phone-result pending"><CheckCircle2/> Svaret er registrert!</div>:<button className="phone-submit" disabled={choice===null||closed||sending} onClick={submit}>{sending?'SENDER …':'LÅS INN SVARET →'}</button>}
+ {outcome==='correct'?<div className="phone-result good"><CheckCircle2/> RIKTIG! +{own.points} POENG 🎉</div>:outcome==='wrong'?<div className="phone-result bad"><XCircle/> FEIL SVAR – 0 POENG</div>:(outcome==='timeout'||outcome==='missed')?<div className="phone-result bad"><Clock3/> {outcome==='missed'?'INGEN SVAR – 0 POENG':'TIDEN ER UTE – 0 POENG'}</div>:own?<div className="phone-result pending"><CheckCircle2/> Svaret er registrert!</div>:<button className="phone-submit" disabled={choice===null||closed||sending} onClick={submit}>{sending?'SENDER …':'LÅS INN SVARET →'}</button>}
  {stage==='answer'&&<div className="phone-reveal">RIKTIG SVAR: <strong>{'ABCD'[live.correct]} · {live.options?.[live.correct]}</strong></div>}
  </div>}
  {error&&<div role="alert" className="phone-error">{error}</div>}
