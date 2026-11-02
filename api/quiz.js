@@ -1,6 +1,6 @@
 import admin from 'firebase-admin';
 import crypto from 'node:crypto';
-function db(){if(!admin.apps.length){const raw=process.env.FIREBASE_SERVICE_ACCOUNT;if(!raw)throw Error('Firebase er ikke konfigurert');admin.initializeApp({credential:admin.credential.cert(JSON.parse(raw))})}return admin.firestore()}
+function db(){if(!admin.apps.length){const raw=process.env.FIREBASE_SERVICE_ACCOUNT;if(!raw)throw Error('Firebase er ikke konfigurert');const credentials=JSON.parse(raw);console.info('Firebase project:',credentials.project_id||'(missing)');admin.initializeApp({credential:admin.credential.cert(credentials)})}return admin.firestore()}
 function authorized(req){const secret=process.env.SESSION_SECRET;if(!secret)return false;const token=(req.headers.cookie||'').match(/(?:^|; )g14_session=([^;]+)/)?.[1]||'';const [expiry,sig]=token.split('.');if(!expiry||!sig||!/^\d+$/.test(expiry)||Number(expiry)<Date.now())return false;const expected=crypto.createHmac('sha256',secret).update(expiry).digest('hex');return sig.length===expected.length&&crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))}
 const fallback=[{id:'test-formation',question:'Hvilken formasjon har Samnanger G14 brukt denne sesongen?',answers:['4–4–2','4–3–3','3–5–2','4–2–3–1'],correct:1}];
 const clean=x=>String(x??'').trim();
