@@ -36,3 +36,9 @@
 .goal-screen .goal-fullscreen-button{opacity:0;animation:goalSceneEnter .7s ease .7s forwards}
 @keyframes goalSceneEnter{from{opacity:0;transform:translateY(18px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.goal-screen .goal-stage,.goal-screen .goal-show-header,.goal-screen .goal-fullscreen-button{animation:none!important;opacity:1!important}}
+
+/* Ready screen: only MÅLSHOW 2026 on the original blue background. */
+.goal-screen .goal-idle{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;opacity:0;animation:goalSceneEnter .85s ease .15s forwards;color:#fff!important;text-shadow:0 6px 32px #0007;font-size:clamp(44px,7.5vw,125px)!important;letter-spacing:.035em!important}
+.goal-idle span{color:#f1c97d}.goal-idle-kicker{font-size:clamp(12px,1.5vw,21px);letter-spacing:.35em;color:#bdd5ec;margin-bottom:22px}.goal-screen .goal-idle small{font-size:clamp(13px,1.6vw,22px);letter-spacing:.22em;color:#c3d7ec;margin-top:20px}
+.goal-screen:has(.goal-idle) .goal-fullscreen-button{display:none!important}
+.goal-screen:has(.goal-stage) .goal-stage{animation:goalSceneEnter 1s ease .5s both!important}
