@@ -36,6 +36,6 @@ export default function QuizPhone(){
  {stage==='answer'&&<div className="phone-reveal">RIKTIG SVAR: <strong>{'ABCD'[live.correct]} · {live.options?.[live.correct]}</strong></div>}
  </div>}
  {error&&<div role="alert" className="phone-error">{error}</div>}
- <div className="phone-score"><div><Trophy size={23}/><span>DIN TOTALSCORE</span></div><strong>{(stage==='answer'||stage==='finished'||stage==='intro'||stage==='waiting'?(live?.totalPoints||0)-(stage==='answer'?0:(own?.points||0)):Math.max(0,(live?.totalPoints||0)-(own?.points||0))).toLocaleString('nb-NO')} <small>POENG</small></strong><p>{history.filter(a=>a.points>0&&(stage==='answer'||a.round!==live?.round)).length} riktige svar · {history.length} besvarte</p></div>
+ <div className="phone-score"><div><Trophy size={23}/><span>DIN TOTALSCORE</span></div><strong>{(stage==='answer'||stage==='finished'||stage==='intro'||stage==='waiting'?(live?.totalPoints||0):Math.max(0,(live?.totalPoints||0)-(own?.points||0))).toLocaleString('nb-NO')} <small>POENG</small></strong><p>{history.filter(a=>a.points>0&&(stage==='answer'||a.round!==live?.round)).length} riktige svar · {history.length} besvarte</p></div>
  </>}</section></main>
 }
