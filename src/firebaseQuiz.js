@@ -16,3 +16,5 @@ export function watchQuizResponses(onData,onError){
   if(snapshot.exists())onData(snapshot.data());
  },onError);
 }
+
+export function normalizePublicQuiz(data){const now=Date.now();const stage=data.stage==='countdown'&&now>=data.countdownEndsAt?'question':data.stage;return {...data,stage,serverNow:now,offset:0,expired:stage==='question'&&now>=data.deadline};}
