@@ -12,7 +12,7 @@ export default async function handler(req,res){
  if(!authorized(req))return res.status(401).json({error:'Du må være logget inn som administrator'});
  if(req.method!=='PUT')return res.status(405).json({error:'Metoden støttes ikke'});
  const input=req.body?.questions;
- if(!Array.isArray(input)||input.length>100)return res.status(400).json({error:'Maks 100 spørsmål'});
+ if(!Array.isArray(input)||input.length===0||input.length>100)return res.status(400).json({error:'Kan ikke lagre en tom spørsmålsliste. Eksisterende spørsmål er beskyttet.'});
  const ids=new Set(),questions=[];
  for(const q of input){
  const question=clean(q.question),answers=Array.isArray(q.answers)?q.answers.map(clean):[],correct=Number(q.correct);
@@ -23,5 +23,5 @@ export default async function handler(req,res){
  }
  await ref.set({questions,updatedAt:admin.firestore.FieldValue.serverTimestamp()});
  return res.status(200).json({ok:true,questions});
- }catch(e){console.error('Quiz API:',e.message);return res.status(500).json({error:'Kunne ikke behandle quizspørsmålene'})}
+ }catch(e){console.error('Quiz API:',e.message);const exhausted=e.code===8||String(e.message||'').includes('RESOURCE_EXHAUSTED');return res.status(exhausted?503:500).json({error:exhausted?'Firebase-kvoten er oppbrukt. Spørsmålene er ikke slettet. Vent til kvoten er tilgjengelig igjen.':'Kunne ikke behandle quizspørsmålene'})}
 }
