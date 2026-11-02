@@ -16,3 +16,13 @@
 .goal-fullscreen-button{position:absolute;top:clamp(14px,2vw,30px);right:clamp(16px,3vw,48px);z-index:5;border:1px solid #d5b97799;border-radius:10px;background:#0a2544df;color:#fff;font-weight:800;padding:10px 16px;cursor:pointer;box-shadow:0 4px 18px #0005}.goal-fullscreen-button:hover{background:#1a466c}
 .goal-screen.goal-fullscreen{padding:clamp(16px,2vh,32px) clamp(20px,4vw,72px)!important}.goal-screen.goal-fullscreen .goal-stage{width:min(100%,calc((100dvh - 160px)*16/9))!important}
 @media(max-width:700px){.goal-screen{padding:16px!important}.goal-show-header h1{font-size:25px}.goal-screen .goal-stage{width:100%!important}.goal-fullscreen-button{top:10px;right:10px;padding:7px 9px;font-size:12px}.goal-show-eyebrow{font-size:9px}}
+
+/* Goal show overlays the existing blue Welcome screen, never replaces it. */
+.goal-screen{background:transparent!important;pointer-events:none!important;display:flex!important;position:fixed!important;inset:0!important;z-index:200!important;justify-content:center!important;align-items:center!important;padding:clamp(18px,4vh,48px)!important;gap:0!important}
+.goal-screen .goal-show-header{display:none!important}
+.goal-screen .goal-stage{pointer-events:auto!important;width:min(78vw,calc(74dvh * 16 / 9),1180px)!important;height:auto!important;aspect-ratio:16/9!important;max-width:100%!important;border:4px solid #e6c57d!important;border-radius:24px!important;background:#02060c!important;box-shadow:0 0 0 9px #071d3566,0 22px 90px #000c!important;flex:none!important;position:relative!important;inset:auto!important;overflow:hidden!important}
+.goal-screen .goal-stage>video{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;border-radius:20px!important}
+.goal-screen .goal-fullscreen-button{pointer-events:auto!important;top:22px!important;right:26px!important}
+.goal-screen.goal-fullscreen .goal-stage{width:min(88vw,calc(82dvh * 16 / 9))!important}
+.goal-screen .goal-idle{pointer-events:none!important;background:#071b35ed;border:2px solid #e6c57d;border-radius:20px;padding:42px;box-shadow:0 20px 65px #0008}
+@media(max-width:700px){.goal-screen .goal-stage{width:94vw!important;border-radius:14px!important}.goal-screen .goal-fullscreen-button{top:10px!important;right:10px!important}}
