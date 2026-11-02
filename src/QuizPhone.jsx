@@ -5,7 +5,7 @@ const playerKey='g14_quiz_player';
 export default function QuizPhone(){
  const [name,setName]=useState(()=>localStorage.getItem(playerKey)||'');
  const [draft,setDraft]=useState(name),[live,setLive]=useState(null),[choice,setChoice]=useState(null),[error,setError]=useState(''),[sending,setSending]=useState(false),[now,setNow]=useState(Date.now());
- useEffect(()=>{let active=true;const load=()=>fetch('/api/quiz-live?name='+encodeURIComponent(name),{cache:'no-store'}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke hente quiz');if(active)setLive({...d,offset:d.serverNow-Date.now()})}).catch(e=>{if(active)setError(e.message)});load();const t=setInterval(load,4000);return()=>{active=false;clearInterval(t)}},[name]);
+ useEffect(()=>{let active=true;let busy=false;const load=async()=>{if(busy)return;busy=true;try{const r=await fetch('/api/quiz-live');const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke hente quiz');if(active)setLive(old=>({...d,myAnswers:old?.myAnswers||[],totalPoints:old?.totalPoints||0,offset:d.serverNow-Date.now()}))}catch(e){if(active)setError(e.message)}finally{busy=false}};load();const t=setInterval(load,4000);return()=>{active=false;clearInterval(t)}},[]);useEffect(()=>{if(!name)return;let active=true;fetch('/api/quiz-live?name='+encodeURIComponent(name),{cache:'no-store'}).then(r=>r.json()).then(d=>{if(active&&d.myAnswers)setLive(old=>old?{...old,myAnswers:d.myAnswers,totalPoints:d.totalPoints,myRank:d.myRank}:old)}).catch(()=>{});return()=>{active=false}},[name]);
  useEffect(()=>{const t=setInterval(()=>setNow(Date.now()),100);return()=>clearInterval(t)},[]);
  useEffect(()=>{setChoice(null);setError('')},[live?.round]);
  const history=live?.myAnswers||[];
