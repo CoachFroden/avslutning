@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {ArrowLeft,Plus,Trash2,ArrowUp,ArrowDown,Save,MonitorPlay,ExternalLink} from 'lucide-react';
 import './quiz-admin.css';
+import {watchQuizResponses} from './firebaseQuiz.js';
 const sample={id:'test-formation',question:'Hvilken formasjon har Samnanger G14 brukt denne sesongen?',answers:['4–4–2','4–3–3','3–5–2','4–2–3–1'],correct:1};
 const DRAFT_KEY='g14_quiz_draft_v1';
 const readDraft=()=>{try{const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');return d&&Array.isArray(d.questions)&&d.questions.length?d:null}catch{return null}};
@@ -13,6 +14,7 @@ export default function QuizAdmin({onBack}){
  useEffect(()=>{const t=setInterval(()=>setNow(Date.now()),250);return()=>clearInterval(t)},[]);
  async function refreshQuizStatus(){try{const r=await fetch('/api/quiz-live?view=admin',{credentials:'include',cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke hente quizstatus');setLive({...d,offset:d.serverNow-Date.now()});setError('')}catch(e){setError('Kunne ikke oppdatere quizstatus: '+e.message)}}
  useEffect(()=>{refreshQuizStatus()},[]);
+ useEffect(()=>watchQuizResponses(data=>{setLive(old=>old&&old.sessionId===data.sessionId&&old.round===data.round?{...old,responses:data.responses||0,counts:data.counts||[0,0,0,0]}:old)},e=>{console.warn('Sanntidsstatus utilgjengelig:',e.code||e.message)}),[]);
  async function sendLive(stage,index){const r=await fetch('/api/quiz-live',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'stage',stage,index})});const d=await r.json();if(!r.ok)throw Error(d.error||'Kunne ikke styre mobilquizen');setLive(v=>({...v,...d,offset:v?.offset||0}))}
  const update=(i,fn)=>{setQuestions(q=>q.map((v,j)=>i===j?fn(v):v));setDirty(true);setNotice('')};
  const add=()=>{setQuestions(q=>[...q,blank()]);setSelected(questions.length);setDirty(true);setNotice('')};
