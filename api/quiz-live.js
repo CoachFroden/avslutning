@@ -55,7 +55,7 @@ export default async function handler(req,res){
  if(!validName(name)||!Number.isInteger(answer)||answer<0||answer>3||!Number.isInteger(round))return res.status(400).json({error:'Skriv navn og velg et svar'});
  const key=crypto.createHash('sha256').update(name.toLocaleLowerCase('nb-NO')).digest('hex');
  try{
- await store.runTransaction(async tx=>{
+ const earnedPoints=await store.runTransaction(async tx=>{
  const snap=await tx.get(session),state=snap.data()||{};
  if(effectiveStage(state)!=='question'||state.round!==round)throw Error('Dette spørsmålet er stengt');
  const startedAt=startedMs(state);const elapsed=Date.now()-startedAt-READY_MS-COUNTDOWN_MS;
@@ -65,8 +65,9 @@ export default async function handler(req,res){
  const ref=answers.doc((state.sessionId||'legacy')+'_'+round+'_'+key),prior=await tx.get(ref);
  if(prior.exists)throw Error('Dette navnet har allerede svart på spørsmålet');
  tx.create(ref,{name,playerKey:key,sessionId:state.sessionId||'legacy',answer,round,points,createdAt:admin.firestore.FieldValue.serverTimestamp()});
+ return points;
  });
- return res.status(200).json({ok:true});
+ return res.status(200).json({ok:true,points:earnedPoints,round,answer});
  }catch(e){return res.status(409).json({error:e.message})}
  }
  return res.status(400).json({error:'Ukjent handling'});
