@@ -26,3 +26,13 @@
 .goal-screen.goal-fullscreen .goal-stage{width:min(88vw,calc(82dvh * 16 / 9))!important}
 .goal-screen .goal-idle{pointer-events:none!important;background:#071b35ed;border:2px solid #e6c57d;border-radius:20px;padding:42px;box-shadow:0 20px 65px #0008}
 @media(max-width:700px){.goal-screen .goal-stage{width:94vw!important;border-radius:14px!important}.goal-screen .goal-fullscreen-button{top:10px!important;right:10px!important}}
+
+/* Show transition: welcome wording fades away; original blue scene remains. */
+.screen.show-goals .welcome{opacity:1!important;transform:none!important;visibility:visible!important}
+.screen.show-goals .welcome .welcome-content{opacity:0!important;transform:translateY(-16px) scale(.97)!important;pointer-events:none!important;transition:opacity .8s ease,transform .8s ease!important}
+.goal-screen{justify-content:center!important;gap:clamp(12px,2vh,24px)!important}
+.goal-screen .goal-show-header{display:block!important;position:relative!important;z-index:2;opacity:0;animation:goalSceneEnter .85s ease .35s forwards;text-align:center;flex:none!important}
+.goal-screen .goal-stage{opacity:0;animation:goalSceneEnter .9s ease .55s forwards;width:min(76vw,calc(65dvh * 16 / 9),1120px)!important}
+.goal-screen .goal-fullscreen-button{opacity:0;animation:goalSceneEnter .7s ease .7s forwards}
+@keyframes goalSceneEnter{from{opacity:0;transform:translateY(18px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.goal-screen .goal-stage,.goal-screen .goal-show-header,.goal-screen .goal-fullscreen-button{animation:none!important;opacity:1!important}}
