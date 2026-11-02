@@ -1,6 +1,6 @@
 import admin from 'firebase-admin';
 import crypto from 'node:crypto';
-function db(){if(!admin.apps.length){admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))})}return admin.firestore()}
+function db(){if(!admin.apps.length){const credentials=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);console.info('Firebase project:',credentials.project_id||'(missing)');admin.initializeApp({credential:admin.credential.cert(credentials)})}return admin.firestore()}
 function auth(req){const secret=process.env.SESSION_SECRET;if(!secret)return false;const token=(req.headers.cookie||'').match(/(?:^|; )g14_session=([^;]+)/)?.[1]||'';const [expiry,sig]=token.split('.');if(!expiry||!sig||!/^\d+$/.test(expiry)||Number(expiry)<Date.now())return false;const expected=crypto.createHmac('sha256',secret).update(expiry).digest('hex');return sig.length===expected.length&&crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))}
 const LIMIT_MS=15000,READY_MS=6000,COUNTDOWN_MS=5000;
 const effectiveStage=s=>s.stage==='countdown'&&Date.now()>=startedMs(s)+READY_MS+COUNTDOWN_MS?'question':s.stage;
