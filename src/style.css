@@ -211,3 +211,23 @@ body:has(.goal-screen) #root{height:100dvh;overflow:hidden}
   6.25%,100%{opacity:0;filter:blur(5px)}
 }
 @media(prefers-reduced-motion:reduce){.screen>.welcome .welcome-player-names span{opacity:0;animation:none}.screen>.welcome .welcome-player-names span:first-child{opacity:.28;filter:blur(1px)}}
+
+/* Continuous drifting while each name independently fades in and out.
+   Movement is linear across the entire 64-second cycle, never paused. */
+.screen>.welcome .welcome-player-names span{
+ animation:welcomeNameVisibility 64s ease-in-out infinite both,welcomeNameDrift 64s linear infinite both;
+}
+@keyframes welcomeNameVisibility{
+  0%{opacity:0;filter:blur(4px)}
+  1.5%{opacity:.4;filter:blur(.8px)}
+  4.5%{opacity:.4;filter:blur(.8px)}
+  6.25%,100%{opacity:0;filter:blur(4px)}
+}
+@keyframes welcomeNameDrift{
+  from{transform:translate3d(-55px,35px,0)}
+  to{transform:translate3d(85px,-65px,0)}
+}
+@media(prefers-reduced-motion:reduce){
+ .screen>.welcome .welcome-player-names span{animation:none;opacity:0}
+ .screen>.welcome .welcome-player-names span:first-child{opacity:.28;filter:blur(1px)}
+}
