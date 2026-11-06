@@ -163,3 +163,8 @@
 @keyframes sceneMistClear{0%,18%{opacity:.9}100%{opacity:0;visibility:hidden}}
 @keyframes sceneMistMove{from{transform:translateX(-12%) scale(1.15)}to{transform:translateX(18%) scale(1.45)}}
 @media(prefers-reduced-motion:reduce){.screen.scene-mist-reveal>.scene-mist{display:none}.screen.scene-mist-reveal>.welcome,.screen.scene-mist-reveal>.quiz-display,.screen.scene-mist-reveal>.vote-display,.screen.scene-mist-reveal>.music-display,.screen.scene-mist-reveal>.award-display{animation:none}}
+
+/* The video screen must be viewport-fixed, never positioned by an animated parent. */
+body:has(.goal-screen){overflow:hidden}
+body:has(.goal-screen) #root{height:100dvh;overflow:hidden}
+.goal-screen{position:fixed;inset:0;width:100vw;height:100dvh;max-height:100dvh;z-index:1000}
