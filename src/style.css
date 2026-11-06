@@ -200,3 +200,14 @@ body:has(.goal-screen) #root{height:100dvh;overflow:hidden}
   70%{opacity:.11;filter:blur(3px)}
 }
 @media(prefers-reduced-motion:reduce){.screen>.welcome .welcome-player-names span{animation:none;opacity:.1;filter:blur(2px)}}
+
+/* One name per four-second slot; all names share a 64-second loop. */
+.screen>.welcome .welcome-player-names span{opacity:0;animation-name:welcomeNameSolo;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-fill-mode:both}
+@keyframes welcomeNameSolo{
+  0%{opacity:0;transform:translate3d(-8px,6px,0);filter:blur(5px)}
+  1.4%{opacity:.36;filter:blur(1.2px)}
+  3.3%{opacity:.4;transform:translate3d(4px,-3px,0);filter:blur(.8px)}
+  5.8%{opacity:0;transform:translate3d(10px,-8px,0);filter:blur(4px)}
+  6.25%,100%{opacity:0;filter:blur(5px)}
+}
+@media(prefers-reduced-motion:reduce){.screen>.welcome .welcome-player-names span{opacity:0;animation:none}.screen>.welcome .welcome-player-names span:first-child{opacity:.28;filter:blur(1px)}}
