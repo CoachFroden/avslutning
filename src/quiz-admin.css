@@ -18,3 +18,5 @@
 
 .quiz-slot-picker{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:16px 0;padding:14px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(7,24,48,.55)}
 .quiz-slot-picker strong{margin-right:4px}.quiz-slot-picker button{min-height:42px;padding:9px 15px;border-radius:9px;cursor:pointer}.quiz-slot-picker span{font-size:.9rem;opacity:.85}
+
+.quiz-name-editor{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 16px}.quiz-name-editor label{font-weight:700}.quiz-name-editor input{min-width:200px;flex:1;padding:11px 12px;border:1px solid #7890b3;border-radius:9px;background:#0a203e;color:white}.quiz-name-editor button{min-height:42px;padding:8px 15px}
