@@ -93,3 +93,49 @@
 .reveal-scorer.award-final .award-winner{animation-delay:6.5s}
 .reveal-player.award-final .award-winner{animation-delay:7.5s}
 @media(prefers-reduced-motion:reduce){.award-reveal.award-final .award-reveal-content h2,.reveal-player.award-final .award-reveal-content h2{animation:none!important;transform:scale(.85)}}
+
+/* Seamless ceremony: intro and reveal are one mounted scene.
+   No title/trophy re-entry animation on the button click. */
+.award-reveal .award-reveal-content h2{
+ animation:none!important;
+ transform:translate3d(0,0,0) scale(1);
+ opacity:1;
+ filter:none;
+ transition:transform 3.4s cubic-bezier(.22,.65,.2,1),opacity 3.4s ease;
+ transform-origin:center;
+ will-change:transform;
+}
+.award-reveal.award-final .award-reveal-content h2,
+.reveal-player.award-final .award-reveal-content h2{
+ animation:none!important;
+ transform:translate3d(0,0,0) scale(.7);
+ opacity:.88;
+ filter:none;
+}
+.award-reveal .award-reveal-content>svg{
+ animation:none!important;
+ transition:transform 3.4s cubic-bezier(.22,.65,.2,1),filter 3.4s ease;
+}
+.award-reveal.award-final .award-reveal-content>svg{
+ animation:none!important;
+ transform:scale(.9);
+}
+.award-reveal .award-name-slot{isolation:isolate}
+.award-reveal .award-name-slot .award-intro-prompt{
+ transition:opacity 2.5s ease,transform 3.4s cubic-bezier(.22,.65,.2,1),filter 2.5s ease;
+ transform:scale(1);
+}
+.award-reveal.award-final .award-name-slot .award-intro-prompt{
+ animation:none!important;
+ opacity:0;
+ transform:scale(.83);
+ filter:blur(8px);
+}
+.award-reveal.award-intro .award-reveal-content>p{
+ opacity:0;
+ visibility:hidden;
+ animation:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .award-reveal .award-reveal-content h2,.award-reveal .award-reveal-content>svg,.award-reveal .award-name-slot .award-intro-prompt{transition:none!important}
+}
