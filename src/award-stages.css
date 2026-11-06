@@ -139,3 +139,17 @@
 @media(prefers-reduced-motion:reduce){
  .award-reveal .award-reveal-content h2,.award-reveal .award-reveal-content>svg,.award-reveal .award-name-slot .award-intro-prompt{transition:none!important}
 }
+
+/* Shared award styling and identical reveal pacing. */
+.reveal-player{background:radial-gradient(ellipse at 50% 100%,#2368a6 0%,#0b2851 38%,#020817 85%)}
+.reveal-player .award-rays{background:conic-gradient(from 0deg,transparent,#b7ddff44,transparent,#b7ddff33,transparent,#ffffff33,transparent);animation:awardSpin 15s linear infinite}
+.reveal-player .reveal-beams span{top:-55%;left:auto;width:24%;height:170%;background:linear-gradient(90deg,transparent,#8cd8ff3b,transparent);filter:blur(20px);animation:scorerSweep 4s ease-in-out infinite alternate}
+.reveal-player .reveal-beams span:nth-child(1){left:3%;--angle:-32deg}
+.reveal-player .reveal-beams span:nth-child(2){left:27%;--angle:19deg;animation-delay:-2s}
+.reveal-player .reveal-beams span:nth-child(3){left:53%;--angle:-18deg;animation-delay:-1s}
+.reveal-player .reveal-beams span:nth-child(4){left:76%;--angle:29deg;animation-delay:-3s}
+.reveal-player .award-reveal-content h2{color:#e7f7ff;text-shadow:0 0 35px #4ac3ff}
+.reveal-player.award-final .award-winner,.reveal-scorer.award-final .award-winner{color:#fff;text-shadow:0 0 22px #ffbd4d,0 0 85px #ff7b34;animation:ceremonyWinner 5.5s 6.5s cubic-bezier(.22,.65,.25,1) both}
+.reveal-player.award-final .reveal-impact,.reveal-scorer.award-final .reveal-impact{animation:scorerImpact 2.8s 9s both}
+.reveal-player.award-final .award-confetti,.reveal-scorer.award-final .award-confetti{animation:ceremonyConfetti 2.5s 9.5s both}
+.reveal-player.award-final .award-reveal-content>p,.reveal-scorer.award-final .award-reveal-content>p{animation:ceremonyCaption 2s 11s both}
