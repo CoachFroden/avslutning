@@ -243,3 +243,9 @@ body:has(.goal-screen) #root{height:100dvh;overflow:hidden}
  100%{opacity:0;filter:blur(4px);transform:translate3d(var(--name-dx),var(--name-dy),0)}
 }
 @media(prefers-reduced-motion:reduce){.screen>.welcome .welcome-player-names .welcome-floating-name{animation:none!important;opacity:.25;filter:blur(1px)}}
+
+.background-audio-control{display:flex;align-items:center;gap:15px;flex-wrap:wrap;padding:12px 22px;background:#091d34;border-bottom:1px solid #2c4d6a;color:#dceeff}
+.background-audio-control button{font:inherit;font-weight:700;cursor:pointer;padding:9px 15px;border-radius:10px}
+.background-audio-control label{display:flex;align-items:center;gap:10px;font-size:13px}
+.background-audio-control input{width:125px;accent-color:#70bbff}
+.background-audio-control small{color:#a9c5da}
