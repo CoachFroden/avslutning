@@ -151,3 +151,13 @@
 @media(max-height:700px){.quiz-display .quiz-ceremony-place.reveal-rank-0{min-height:235px}.quiz-display .quiz-ceremony-place.reveal-rank-1{min-height:170px}.quiz-display .quiz-ceremony-place.reveal-rank-2{min-height:155px}}
 @media(max-width:650px){.quiz-display .quiz-podium-reveal.quiz-ceremony{gap:5px;grid-template-columns:.9fr 1.15fr .9fr}.quiz-display .quiz-ceremony-place.reveal-rank-0{transform:scale(1.01)}.quiz-display .quiz-ceremony-place.reveal-rank-1,.quiz-display .quiz-ceremony-place.reveal-rank-2{transform:scale(.96)}}
 @media(prefers-reduced-motion:reduce){.quiz-display .quiz-ceremony-place.quiz-champion-revealed,.quiz-display .quiz-champion-burst,.quiz-display .quiz-ceremony-place.reveal-rank-0 .quiz-winner-details.is-visible{animation:none}}
+
+/* Shared atmospheric transition: only when changing the big-screen module. */
+.scene-fog-transition{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 55%,#182a3a 0%,#070d18 75%);animation:sceneFogExit 3.6s ease-in-out both;isolation:isolate}
+.scene-fog-layer{position:absolute;inset:-35%;background:radial-gradient(ellipse at 28% 55%,#a9b9cc88 0%,#647c9766 18%,transparent 49%),radial-gradient(ellipse at 75% 48%,#c4d0dc77 0%,#71869b66 22%,transparent 53%);filter:blur(48px);opacity:.75;animation:sceneFogDrift 3.6s ease-out both}
+.scene-fog-front{transform:scaleX(-1);opacity:.65;animation-delay:.12s}
+.scene-fog-title{position:relative;z-index:1;padding:0 6vw;text-align:center;font-size:clamp(2.4rem,7vw,7.5rem);font-weight:900;letter-spacing:.13em;color:#f6e5b3;text-shadow:0 0 24px #edcb7a88,0 8px 48px #000;animation:sceneFogTitle 3.6s ease-in-out both}
+@keyframes sceneFogExit{0%,58%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
+@keyframes sceneFogDrift{0%{transform:translateX(-9%) scale(1.16);opacity:.9}75%{opacity:.5}100%{transform:translateX(12%) scale(1.4);opacity:0}}
+@keyframes sceneFogTitle{0%{opacity:0;filter:blur(28px);transform:translateY(48px) scale(.94)}45%{opacity:1;filter:blur(1px);transform:translateY(0) scale(1)}72%{opacity:1;filter:blur(0)}100%{opacity:0;filter:blur(12px);transform:translateY(-18px) scale(1.04)}}
+@media(prefers-reduced-motion:reduce){.scene-fog-transition{display:none}}
