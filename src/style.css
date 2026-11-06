@@ -231,3 +231,15 @@ body:has(.goal-screen) #root{height:100dvh;overflow:hidden}
  .screen>.welcome .welcome-player-names span{animation:none;opacity:0}
  .screen>.welcome .welcome-player-names span:first-child{opacity:.28;filter:blur(1px)}
 }
+
+/* A fresh name element every four seconds: randomized origin and travel. */
+.screen>.welcome .welcome-player-names .welcome-floating-name{
+ animation:welcomeNameRandomDrift 4s linear both!important;
+}
+@keyframes welcomeNameRandomDrift{
+ 0%{opacity:0;filter:blur(4px);transform:translate3d(0,0,0)}
+ 25%{opacity:.42;filter:blur(.8px)}
+ 72%{opacity:.42;filter:blur(.8px)}
+ 100%{opacity:0;filter:blur(4px);transform:translate3d(var(--name-dx),var(--name-dy),0)}
+}
+@media(prefers-reduced-motion:reduce){.screen>.welcome .welcome-player-names .welcome-floating-name{animation:none!important;opacity:.25;filter:blur(1px)}}
