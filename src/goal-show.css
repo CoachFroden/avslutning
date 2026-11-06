@@ -48,3 +48,8 @@
 .goal-panel .goal-actions select:focus-visible{outline:2px solid #64b8ff;outline-offset:2px}
 .goal-panel .goal-actions select option{background:#071e37;color:#f2f7ff}
 @media(max-width:600px){.goal-panel .goal-actions select{min-width:0;width:100%;flex-basis:100%}}
+
+/* Full-match heading: clear fixture and date, without changing the goal-show title. */
+.goal-show-header .goal-match-title{font-size:clamp(1.35rem,3.2vw,3.5rem);line-height:1.12;letter-spacing:.025em;overflow-wrap:anywhere;margin:.35rem 0 .2rem}
+.goal-show-header .goal-match-title span{color:#f6ca72}
+.goal-show-header .goal-match-date{font-size:clamp(.85rem,1.25vw,1.15rem);font-weight:650;letter-spacing:.12em;text-transform:uppercase;color:#d7e5f4;margin-top:.35rem}
