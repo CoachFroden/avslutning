@@ -153,8 +153,13 @@
 @media(prefers-reduced-motion:reduce){.quiz-display .quiz-ceremony-place.quiz-champion-revealed,.quiz-display .quiz-champion-burst,.quiz-display .quiz-ceremony-place.reveal-rank-0 .quiz-winner-details.is-visible{animation:none}}
 
 
-/* Reveal the actual existing screen, without inserting an interstitial title or image. */
-.screen.scene-soft-enter{animation:sceneSoftArrival 1.35s cubic-bezier(.2,.65,.25,1) both}
-.scene-goals-soft-enter{animation:sceneSoftArrival 1.35s cubic-bezier(.2,.65,.25,1) both}
-@keyframes sceneSoftArrival{0%{opacity:0;filter:blur(15px) brightness(.55);transform:translateY(14px) scale(.995)}45%{opacity:.7;filter:blur(5px) brightness(.85)}100%{opacity:1;filter:blur(0) brightness(1);transform:none}}
-@media(prefers-reduced-motion:reduce){.screen.scene-soft-enter,.scene-goals-soft-enter{animation:none}}
+
+/* The real screen appears through drifting mist; no extra title or interstitial. */
+.screen.scene-mist-reveal>.welcome,.screen.scene-mist-reveal>.quiz-display,.screen.scene-mist-reveal>.vote-display,.screen.scene-mist-reveal>.music-display,.screen.scene-mist-reveal>.award-display{animation:sceneContentReveal 2.4s ease-out both}
+.screen.scene-mist-reveal>.scene-mist{position:absolute;inset:0;z-index:80;pointer-events:none;overflow:hidden;animation:sceneMistClear 2.5s ease-out both;background:radial-gradient(ellipse at 35% 65%,#9bafc077,transparent 57%),radial-gradient(ellipse at 70% 35%,#b6c2d077,transparent 54%);filter:blur(25px)}
+.screen.scene-mist-reveal>.scene-mist::before,.screen.scene-mist-reveal>.scene-mist::after{content:'';position:absolute;inset:-30%;background:radial-gradient(ellipse at 50% 50%,#a5b5c488 0%,#758a9a55 32%,transparent 70%);filter:blur(55px);animation:sceneMistMove 2.5s ease-out both}
+.screen.scene-mist-reveal>.scene-mist::after{animation-direction:reverse;opacity:.5}
+@keyframes sceneContentReveal{0%{filter:blur(24px) brightness(.65)}35%{filter:blur(13px) brightness(.8)}100%{filter:blur(0) brightness(1)}}
+@keyframes sceneMistClear{0%,18%{opacity:.9}100%{opacity:0;visibility:hidden}}
+@keyframes sceneMistMove{from{transform:translateX(-12%) scale(1.15)}to{transform:translateX(18%) scale(1.45)}}
+@media(prefers-reduced-motion:reduce){.screen.scene-mist-reveal>.scene-mist{display:none}.screen.scene-mist-reveal>.welcome,.screen.scene-mist-reveal>.quiz-display,.screen.scene-mist-reveal>.vote-display,.screen.scene-mist-reveal>.music-display,.screen.scene-mist-reveal>.award-display{animation:none}}
