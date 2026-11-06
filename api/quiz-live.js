@@ -20,7 +20,7 @@ export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');
  try{
  const store=db(),session=store.doc('settings/quizLive'),answers=store.collection('quizAnswers'),history=store.collection('quizSessions'),publicCount=store.doc('quizPublic/live');
- const selection=store.doc('settings/quizSelection');const activeSlot=(await selection.get()).data()?.slot==='2'?'2':'1';
+ const selection=store.doc('settings/quizSelection');const selectionData=(await selection.get()).data()||{};const activeSlot=selectionData.slot==='2'?'2':'1';const quizTitle=selectionData.titles?.[activeSlot]||(activeSlot==='2'?'TESTQUIZ':'DEN STORE LAGQUIZEN');
  if(req.method==='GET'&&req.query?.view==='history'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan se historikk'});const snaps=await history.orderBy('finishedAt','desc').limit(50).get();return res.status(200).json({sessions:snaps.docs.map(d=>({id:d.id,...d.data(),finishedAt:d.data().finishedAt?.toMillis?.()||null}))})}
  if(req.method==='GET'){
  const state=(await session.get()).data()||{stage:'waiting',index:0,round:0};
@@ -28,12 +28,19 @@ export default async function handler(req,res){
  const q=state.questionSnapshot||questions?.[state.index];
  const stage=effectiveStage(state);const startedAt=startedMs(state);const readyEndsAt=startedAt+READY_MS;const countdownEndsAt=readyEndsAt+COUNTDOWN_MS;const deadline=countdownEndsAt+LIMIT_MS;const expired=startedAt>0&&Date.now()>=deadline;
  let leaderboard=state.leaderboard||[];if(stage==='finished'&&!state.leaderboard){const all=await answers.get();const board=new Map();all.docs.forEach(doc=>{const v=doc.data();if((v.sessionId||'legacy')!==(state.sessionId||'legacy'))return;const key=v.playerKey||v.name;const prev=board.get(key)||{name:v.name,points:0,correct:0};prev.points+=v.points||0;prev.correct+=(v.points||0)>0?1:0;board.set(key,prev)});leaderboard=[...board.values()].sort((a,b)=>b.points-a.points||b.correct-a.correct||a.name.localeCompare(b.name,'nb')).map((v,i)=>({...v,rank:i+1}));}
- const payload={activeSlot,sessionId:state.sessionId||'legacy',revealAt:state.revealAt||null,leaderboard:stage==='finished'&&auth(req)&&req.query?.view==='admin'?leaderboard:undefined,serverNow:Date.now(),startedAt,deadline,readyEndsAt,countdownEndsAt,expired,stage,index:state.index,round:state.round||0,total:state.totalQuestions??questions?.length??0,question:stage==='question'||stage==='answer'?q?.question:null,options:stage==='question'||stage==='answer'?q?.answers:null,correct:stage==='answer'?q?.correct:null};
+ const payload={activeSlot,quizTitle,titles:auth(req)&&req.query?.view==='admin'?{1:selectionData.titles?.['1']||'DEN STORE LAGQUIZEN',2:selectionData.titles?.['2']||'TESTQUIZ'}:undefined,sessionId:state.sessionId||'legacy',revealAt:state.revealAt||null,leaderboard:stage==='finished'&&auth(req)&&req.query?.view==='admin'?leaderboard:undefined,serverNow:Date.now(),startedAt,deadline,readyEndsAt,countdownEndsAt,expired,stage,index:state.index,round:state.round||0,total:state.totalQuestions??questions?.length??0,question:stage==='question'||stage==='answer'?q?.question:null,options:stage==='question'||stage==='answer'?q?.answers:null,correct:stage==='answer'?q?.correct:null};
  const playerName=String(req.query?.name||'').trim();if(validName(playerName)){const key=crypto.createHash('sha256').update(playerName.toLocaleLowerCase('nb-NO')).digest('hex');const mySnap=await answers.where('playerKey','==',key).get();payload.myAnswers=mySnap.docs.filter(d=>(d.data().sessionId||'legacy')===(state.sessionId||'legacy')).map(d=>({round:d.data().round,answer:d.data().answer,points:d.data().points||0}));payload.totalPoints=payload.myAnswers.reduce((n,a)=>n+a.points,0);}
  if(auth(req)&&req.query?.view==='admin'){const snap=await answers.where('round','==',state.round||0).get();const current=snap.docs.filter(d=>(d.data().sessionId||'legacy')===(state.sessionId||'legacy'));payload.responses=current.length;payload.counts=[0,0,0,0];current.forEach(d=>{const n=d.data().answer;if(n>=0&&n<4)payload.counts[n]++})}
  if(!playerName&&!auth(req))res.setHeader('Cache-Control','public, s-maxage=3, stale-while-revalidate=2');return res.status(200).json(payload)
  }
  if(req.method!=='POST')return res.status(405).json({error:'Ugyldig metode'});
+ if(req.body?.action==='rename-quiz'){
+ if(!auth(req))return res.status(401).json({error:'Kun administrator kan endre quiznavn'});
+ const slot=String(req.body.slot||''),title=String(req.body.title||'').trim();
+ if(!['1','2'].includes(slot)||!title||title.length>70)return res.status(400).json({error:'Quiznavnet må være mellom 1 og 70 tegn'});
+ await selection.set({titles:{[slot]:title}},{merge:true});
+ return res.status(200).json({ok:true,slot,title});
+ }
  if(req.body?.action==='select-quiz'){
  if(!auth(req))return res.status(401).json({error:'Kun administrator kan velge quiz'});
  const slot=String(req.body.slot||'');
@@ -42,7 +49,7 @@ export default async function handler(req,res){
  if(current.stage==='countdown'||current.stage==='question')return res.status(409).json({error:'Avslutt den pågående quizen før du bytter'});
  const sessionId=crypto.randomUUID();
  const state={stage:'intro',index:0,round:0,startedAt:0,revealAt:null,leaderboard:[],questionSnapshot:null,totalQuestions:0,sessionId,updatedAt:admin.firestore.FieldValue.serverTimestamp()};
- const batch=store.batch();batch.set(selection,{slot});batch.set(session,state);batch.set(publicCount,{...publicState(state),responses:0,counts:[0,0,0,0]});await batch.commit();
+ const batch=store.batch();batch.set(selection,{slot},{merge:true});batch.set(session,state);batch.set(publicCount,{...publicState(state),responses:0,counts:[0,0,0,0]});await batch.commit();
  return res.status(200).json({ok:true,activeSlot:slot,stage:'intro',sessionId,round:0,index:0});
  }
  if(req.body?.action==='finish'){if(!auth(req))return res.status(401).json({error:'Kun administrator kan avslutte quizen'});const old=(await session.get()).data()||{};if(!['countdown','answer'].includes(old.stage)||(old.round||0)<1)return res.status(409).json({error:'Start quizen før du avslutter den'});const id=old.sessionId||'legacy';const all=await answers.where('sessionId','==',id).get();const players=new Set(all.docs.map(d=>d.data().playerKey));const board=new Map();for(const doc of all.docs){const v=doc.data(),key=v.playerKey||v.name,prev=board.get(key)||{name:v.name,points:0,correct:0};prev.points+=v.points||0;prev.correct+=(v.points||0)>0?1:0;board.set(key,prev)}const leaderboard=[...board.values()].sort((a,b)=>b.points-a.points||b.correct-a.correct||a.name.localeCompare(b.name,'nb')).map((v,i)=>({...v,rank:i+1}));await history.doc(id).set({finishedAt:admin.firestore.FieldValue.serverTimestamp(),playerCount:players.size,answerCount:all.size,roundCount:old.round||0});await session.set({stage:'finished',leaderboard,revealAt:null,sessionId:id,updatedAt:admin.firestore.FieldValue.serverTimestamp()},{merge:true});await publicCount.set({...publicState({...old,stage:'finished',leaderboard,revealAt:null}),responses:0,counts:[0,0,0,0]},{merge:true});return res.status(200).json({ok:true,stage:'finished'})}
