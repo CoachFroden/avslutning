@@ -72,7 +72,7 @@
 @keyframes ceremonyCurtain{0%{opacity:0}22%{opacity:.88}65%{opacity:.8}100%{opacity:0}}
 @keyframes ceremonyTrophy{0%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.17);filter:drop-shadow(0 0 55px #ffda87)}100%{transform:scale(1)}}
 @keyframes ceremonyTitle{0%{opacity:1;filter:blur(0)}30%{opacity:.35;filter:blur(8px)}100%{opacity:1;filter:blur(0)}}
-@keyframes ceremonyWinner{0%,10%{opacity:0;visibility:hidden;transform:translateY(50px) scale(.72);filter:blur(32px);letter-spacing:.18em}40%{opacity:.25;visibility:visible;filter:blur(18px)}78%{opacity:1;filter:blur(0);transform:translateY(0) scale(1.06)}100%{opacity:1;visibility:visible;transform:translateY(0) scale(1);letter-spacing:normal}}
+@keyframes ceremonyWinner{0%,64%{opacity:0;visibility:hidden;transform:translateY(38px) scale(.9);filter:blur(18px);letter-spacing:.08em}65%{opacity:0;visibility:visible;transform:translateY(38px) scale(.9);filter:blur(18px)}85%{opacity:1;visibility:visible;filter:blur(0);transform:translateY(0) scale(1.04)}100%{opacity:1;visibility:visible;filter:blur(0);transform:translateY(0) scale(1);letter-spacing:normal}}
 @keyframes ceremonyCaption{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes ceremonyConfetti{0%{opacity:0}100%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.award-reveal .award-intro-prompt{transition:none}.award-reveal.award-final:after{display:none}.award-reveal.award-final .award-winner,.award-reveal.award-final .award-reveal-content>p,.award-reveal.award-final .award-reveal-content h2,.award-reveal.award-final .award-reveal-content>svg,.award-reveal.award-final .award-confetti{animation:none;opacity:1;visibility:visible;filter:none;transform:none}}
