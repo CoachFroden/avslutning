@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-// Controlled load test for Quiz 2 only. Node 18+.
-// Usage: node scripts/load-test-quiz.mjs https://avslutning.vercel.app
-// Start Quiz 2 in admin, advance to an active question, then run this script within its 15-second answer window.
+// Controlled load test for Quiz 2 by default, Quiz 1 only with explicit opt-in. Node 18+.
+// Usage: node scripts/load-test-quiz.mjs https://avslutning.vercel.app [--quiz1-test]
+// Start the selected quiz in admin, advance to an active question, then run within its 15-second answer window.
 // Test players are prefixed LOADTEST_. Do not run during a real event.
 const base=(process.argv[2]||'').replace(/\/$/,'');
 if(!/^https:\/\//.test(base))throw Error('Provide HTTPS base URL');
 const status=await (await fetch(base+'/api/quiz-live',{cache:'no-store'})).json();
-if(status.activeSlot!=='2')throw Error('Aborted: active quiz is not Quiz 2');
-if(status.stage!=='question'||status.expired)throw Error('Aborted: start an active question in Quiz 2 first');
+const allowQuiz1=process.argv.includes('--quiz1-test');
+const requiredSlot=allowQuiz1?'1':'2';
+if(status.activeSlot!==requiredSlot)throw Error('Aborted: expected Quiz '+requiredSlot+' but active quiz is '+status.activeSlot);
+if(status.stage!=='question'||status.expired)throw Error('Aborted: start an active question in Quiz '+requiredSlot+' first');
 const round=status.round,sessionId=status.sessionId;
 const started=Date.now();
 const results=await Promise.all(Array.from({length:25},async(_,i)=>{
