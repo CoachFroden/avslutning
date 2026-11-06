@@ -48,3 +48,31 @@
 @media(prefers-reduced-motion:reduce){.reveal-beams span,.reveal-rings span,.scorer-countdown span,.player-stars i,.reveal-scorer.award-final .reveal-impact,.reveal-player.award-final .reveal-impact,.reveal-scorer.award-final .award-winner,.reveal-player.award-final .award-winner{animation:none!important}.scorer-countdown{display:none}}
 
 .gold-trophy{display:block;width:clamp(92px,13vw,180px);height:auto;margin:0 auto 12px;overflow:visible;filter:drop-shadow(0 0 17px rgba(255,196,79,.48)) drop-shadow(0 10px 12px rgba(0,0,0,.35));animation:trophyEntrance 1.2s cubic-bezier(.18,.85,.25,1) both}@keyframes trophyEntrance{from{opacity:0;transform:translateY(-28px) scale(.6) rotate(-8deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+
+
+/* Ceremony v2: the same stage stays mounted between the two admin buttons.
+   Intro fades away instead of the entire scene being replaced. */
+.award-reveal{isolation:isolate;transition:background 1.8s ease}
+.award-reveal .award-reveal-content{animation:none;transform:translateZ(0)}
+.award-reveal .award-intro-prompt{transition:opacity 1.8s ease,transform 1.8s cubic-bezier(.2,.7,.2,1),filter 1.8s ease}
+.award-reveal.award-final .award-intro-prompt{opacity:0;transform:translateY(-35px) scale(.95);filter:blur(12px);pointer-events:none;animation:none}
+.award-reveal.award-intro .award-winner,.award-reveal.award-intro .award-reveal-content>p{opacity:0;visibility:hidden;animation:none}
+.award-reveal.award-intro .award-confetti{opacity:0}
+.award-reveal.award-final .award-confetti{animation:ceremonyConfetti 2s 7.8s both}
+.award-reveal.award-final .award-reveal-content>svg{animation:ceremonyTrophy 2.8s ease-in-out both}
+.award-reveal.award-final .award-reveal-content h2{animation:ceremonyTitle 3.5s cubic-bezier(.2,.8,.2,1) both}
+.reveal-scorer.award-final .award-winner{animation:ceremonyWinner 3.4s 5.3s cubic-bezier(.15,.8,.2,1) both}
+.reveal-player.award-final .award-winner{animation:ceremonyWinner 4.2s 6.4s cubic-bezier(.15,.8,.2,1) both}
+.reveal-scorer.award-final .reveal-impact{animation:scorerImpact 2.8s 7.5s both}
+.reveal-player.award-final .reveal-impact{animation:playerFlash 3.5s 9.2s both}
+.reveal-player.award-final .award-confetti{animation:ceremonyConfetti 2.5s 9.7s both}
+.reveal-scorer.award-final .award-reveal-content>p{animation:ceremonyCaption 1.8s 9s both}
+.reveal-player.award-final .award-reveal-content>p{animation:ceremonyCaption 2s 11s both}
+.award-reveal.award-final:after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 12%,#010612 95%);animation:ceremonyCurtain 5s ease-in-out both}
+@keyframes ceremonyCurtain{0%{opacity:0}22%{opacity:.88}65%{opacity:.8}100%{opacity:0}}
+@keyframes ceremonyTrophy{0%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.17);filter:drop-shadow(0 0 55px #ffda87)}100%{transform:scale(1)}}
+@keyframes ceremonyTitle{0%{opacity:1;filter:blur(0)}30%{opacity:.35;filter:blur(8px)}100%{opacity:1;filter:blur(0)}}
+@keyframes ceremonyWinner{0%,10%{opacity:0;visibility:hidden;transform:translateY(50px) scale(.72);filter:blur(32px);letter-spacing:.18em}40%{opacity:.25;visibility:visible;filter:blur(18px)}78%{opacity:1;filter:blur(0);transform:translateY(0) scale(1.06)}100%{opacity:1;visibility:visible;transform:translateY(0) scale(1);letter-spacing:normal}}
+@keyframes ceremonyCaption{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes ceremonyConfetti{0%{opacity:0}100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.award-reveal .award-intro-prompt{transition:none}.award-reveal.award-final:after{display:none}.award-reveal.award-final .award-winner,.award-reveal.award-final .award-reveal-content>p,.award-reveal.award-final .award-reveal-content h2,.award-reveal.award-final .award-reveal-content>svg,.award-reveal.award-final .award-confetti{animation:none;opacity:1;visibility:visible;filter:none;transform:none}}
