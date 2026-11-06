@@ -5,18 +5,12 @@
 @keyframes confettiFloat{0%{transform:translate3d(0,-12vh,0) rotate(0deg) rotateY(0deg);opacity:0}7%{opacity:1}24%{transform:translate3d(calc(var(--drift)*.24 + var(--sway)),28vh,0) rotate(calc(var(--spin)*.24)) rotateY(100deg)}48%{transform:translate3d(calc(var(--drift)*.48 - var(--sway)),63vh,0) rotate(calc(var(--spin)*.48)) rotateY(220deg)}73%{transform:translate3d(calc(var(--drift)*.73 + var(--sway)),105vh,0) rotate(calc(var(--spin)*.73)) rotateY(420deg)}100%{transform:translate3d(var(--drift),155vh,0) rotate(var(--spin)) rotateY(680deg);opacity:.8}}
 @media(prefers-reduced-motion:reduce){.award-confetti i{animation:none;opacity:0}}
 
-
-/* Stable award layout: no vertical reflow when switching intro -> reveal.
-   Prompt, winner and caption share reserved slots; only opacity/animation changes. */
-.award-reveal .award-reveal-content{width:min(100%,1500px);height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3vh 4vw;min-height:0}
-.award-reveal .award-reveal-content>svg{flex:0 0 auto;margin-bottom:clamp(8px,2vh,22px)}
-.award-reveal .award-reveal-content .vote-kicker{flex:0 0 auto}
-.award-reveal .award-reveal-content h2{flex:0 0 auto;margin:clamp(10px,2vh,25px) 0}
-.award-reveal .award-intro-prompt,.award-reveal .award-winner{grid-area:1/1;align-self:center;justify-self:center;margin:0!important}
-.award-reveal .award-reveal-content{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto auto auto minmax(110px,23vh) minmax(45px,10vh) minmax(0,1fr);justify-items:center;align-items:center}
-.award-reveal .award-reveal-content>svg{grid-row:2;grid-column:1}
-.award-reveal .award-reveal-content .vote-kicker{grid-row:3;grid-column:1}
-.award-reveal .award-reveal-content h2{grid-row:4;grid-column:1}
-.award-reveal .award-intro-prompt,.award-reveal .award-winner{grid-row:5;grid-column:1;max-width:95vw}
-.award-reveal .award-reveal-content>p{grid-row:6;grid-column:1;margin:0!important}
-@media(max-height:650px){.award-reveal .award-reveal-content{grid-template-rows:minmax(0,1fr) auto auto auto minmax(70px,19vh) minmax(25px,8vh) minmax(0,1fr)}}
+/* Keep the original single-line award heading and reserve space for the
+   winner without reflowing the introduction when the reveal starts. */
+.award-reveal .award-reveal-content{width:100%;max-width:none;box-sizing:border-box;padding:3vw 2vw;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.award-reveal .award-reveal-content h2{white-space:nowrap;font-size:clamp(42px,10vw,150px);line-height:1;max-width:100%;margin:clamp(14px,3vh,30px) 0}
+.award-reveal .award-intro-prompt,.award-reveal .award-winner{height:clamp(105px,18vh,175px);display:flex;align-items:center;justify-content:center;margin:0!important}
+.award-reveal .award-intro-prompt{position:relative}
+.award-reveal .award-winner{position:absolute;left:0;right:0;bottom:clamp(60px,10vh,115px);pointer-events:none}
+.award-reveal .award-reveal-content>p{height:clamp(45px,8vh,80px);margin:0!important;display:flex;align-items:center;justify-content:center}
+@media(max-width:700px){.award-reveal .award-reveal-content h2{font-size:clamp(34px,9.2vw,100px)}}
