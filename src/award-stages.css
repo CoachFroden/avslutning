@@ -61,8 +61,8 @@
 .award-reveal.award-final .award-confetti{animation:ceremonyConfetti 2s 7.8s both}
 .award-reveal.award-final .award-reveal-content>svg{animation:ceremonyTrophy 2.8s ease-in-out both}
 .award-reveal.award-final .award-reveal-content h2{animation:ceremonyTitle 3.5s cubic-bezier(.2,.8,.2,1) both}
-.reveal-scorer.award-final .award-winner{animation:ceremonyWinner 3.4s 5.3s cubic-bezier(.15,.8,.2,1) both}
-.reveal-player.award-final .award-winner{animation:ceremonyWinner 4.2s 6.4s cubic-bezier(.15,.8,.2,1) both}
+.reveal-scorer.award-final .award-winner{animation:ceremonyWinner 5s 5.3s cubic-bezier(.22,.65,.25,1) both}
+.reveal-player.award-final .award-winner{animation:ceremonyWinner 6s 6.4s cubic-bezier(.22,.65,.25,1) both}
 .reveal-scorer.award-final .reveal-impact{animation:scorerImpact 2.8s 7.5s both}
 .reveal-player.award-final .reveal-impact{animation:playerFlash 3.5s 9.2s both}
 .reveal-player.award-final .award-confetti{animation:ceremonyConfetti 2.5s 9.7s both}
