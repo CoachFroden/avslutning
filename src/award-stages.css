@@ -76,3 +76,20 @@
 @keyframes ceremonyCaption{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes ceremonyConfetti{0%{opacity:0}100%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.award-reveal .award-intro-prompt{transition:none}.award-reveal.award-final:after{display:none}.award-reveal.award-final .award-winner,.award-reveal.award-final .award-reveal-content>p,.award-reveal.award-final .award-reveal-content h2,.award-reveal.award-final .award-reveal-content>svg,.award-reveal.award-final .award-confetti{animation:none;opacity:1;visibility:visible;filter:none;transform:none}}
+
+/* Title recedes into the stage first; the reveal effects then take over.
+   Keep font-size/layout fixed and animate only transform to avoid a jump. */
+.award-reveal .award-reveal-content h2{transform-origin:center center;will-change:transform,filter}
+.award-reveal.award-final .award-reveal-content h2,
+.reveal-player.award-final .award-reveal-content h2{
+ animation:awardTitleRecede 3.1s cubic-bezier(.2,.65,.22,1) both!important;
+}
+@keyframes awardTitleRecede{
+ 0%{transform:translateZ(0) scale(1);opacity:1;filter:blur(0)}
+ 70%{transform:translateZ(0) scale(.73);opacity:.95;filter:blur(0)}
+ 100%{transform:translateZ(0) scale(.7);opacity:.88;filter:blur(0)}
+}
+/* Wait until the title has finished receding before the winner appears. */
+.reveal-scorer.award-final .award-winner{animation-delay:6.5s}
+.reveal-player.award-final .award-winner{animation-delay:7.5s}
+@media(prefers-reduced-motion:reduce){.award-reveal.award-final .award-reveal-content h2,.reveal-player.award-final .award-reveal-content h2{animation:none!important;transform:scale(.85)}}
