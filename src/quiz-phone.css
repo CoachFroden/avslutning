@@ -67,3 +67,5 @@
 @media(prefers-reduced-motion:reduce){.quiz-phone *,.quiz-phone *:before{animation:none!important;transition:none!important}}
 
 .phone-final{text-align:center;animation:phoneEnter .65s ease-out}.phone-final-trophy{font-size:76px;filter:drop-shadow(0 0 25px #ffda70aa);animation:phoneBolt 2s ease-in-out infinite}.phone-final h2{font-size:25px;color:#ffe08b}.phone-final>strong{display:block;font-size:34px;color:#fff;text-shadow:0 0 24px #ffe57a77}.phone-final-board{display:grid;gap:8px;margin-top:22px}.phone-final-board>div{display:flex;justify-content:space-between;gap:12px;padding:13px;background:#17466e;border:1px solid #5e94bf;border-radius:12px;font-size:15px}.phone-final-board b{color:#ffe18a}
+
+.phone-heading .phone-quiz-title{font-size:clamp(22px,7vw,35px);line-height:1.1;letter-spacing:-.035em;overflow-wrap:anywhere;min-width:0;flex:1}
