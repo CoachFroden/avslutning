@@ -15,3 +15,6 @@
 .quiz-editor-show-actions .quiz-main-action{grid-column:1/-1;background:linear-gradient(110deg,#44b8ff,#1777c5);border:1px solid #9cdbff;color:#fff;font-size:20px;min-height:66px;box-shadow:0 8px 22px #0005}.quiz-editor-show-actions .quiz-finish-button{grid-column:1/-1}.quiz-secondary-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.quiz-secondary-controls button{padding:10px 14px;border-radius:9px;cursor:pointer}.quiz-secondary-controls button:disabled{opacity:.4;cursor:not-allowed}.quiz-control-progress{color:#c6e2f8;font-weight:700}.quiz-phase-status{padding:12px 15px;background:#09223c;border:1px solid #547d9d;border-radius:10px}.quiz-editor-show-actions button:disabled{opacity:.45;cursor:not-allowed}
 
 .quiz-editor-show-actions .quiz-answer-button{grid-column:1/-1;background:#226d54;border:1px solid #69d7ae;color:#fff;font-size:18px;min-height:54px}.quiz-editor-show-actions .quiz-answer-button:hover{background:#2b8769}
+
+.quiz-slot-picker{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:16px 0;padding:14px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(7,24,48,.55)}
+.quiz-slot-picker strong{margin-right:4px}.quiz-slot-picker button{min-height:42px;padding:9px 15px;border-radius:9px;cursor:pointer}.quiz-slot-picker span{font-size:.9rem;opacity:.85}
