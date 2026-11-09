@@ -11,7 +11,7 @@ const testQuestions=[
 ];
 const questionRef=(store,slot)=>store.doc(slot==='2'?'settings/quiz2':'settings/quiz');
 const getQuestions=async(store,slot)=>{const data=(await questionRef(store,slot).get()).data();return data?.questions||(slot==='2'?testQuestions:[])};
-const LIMIT_MS=15000,READY_MS=0,COUNTDOWN_MS=0,ANSWER_DELAY_MS=1500;
+const LIMIT_MS=15000,READY_MS=3000,COUNTDOWN_MS=4000,ANSWER_DELAY_MS=1500;
 const effectiveStage=s=>s.stage==='countdown'?(Date.now()>=startedMs(s)+READY_MS+COUNTDOWN_MS+LIMIT_MS+ANSWER_DELAY_MS?'answer':Date.now()>=startedMs(s)+READY_MS+COUNTDOWN_MS?'question':'countdown'):s.stage;
 const startedMs=state=>state.startedAt?.toMillis?.()??(typeof state.startedAt==='number'?state.startedAt:0);
 const validName=n=>typeof n==='string'&&n.trim().length>=2&&n.trim().length<=60;
